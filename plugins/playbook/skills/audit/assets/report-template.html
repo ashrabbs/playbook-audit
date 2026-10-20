@@ -11,66 +11,78 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-/* Layout: single measured column; summary band, then layers, then findings. */
+/* Layout: single measured column. Summary + distribution, compact layer meters, findings with copyable fix prompts. */
 :root{
-  --paper:#f7f6f4; --card:#ffffff; --sunk:#edebe7; --rule:#dedbd5;
+  --paper:#f7f6f4; --card:#ffffff; --sunk:#eae7e2; --rule:#ded9d2;
   --ink:#1c1b19; --ink-2:#595650; --ink-3:#8b877f;
   --ok:#1d6f46; --ok-bg:#e6f1ea;
   --warn:#8a5a06; --warn-bg:#f8f0df;
   --bad:#a62f26; --bad-bg:#f9e9e7;
+  --na:#b8b3ab;
   --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --paper:#16161a; --card:#1e1e23; --sunk:#26262c; --rule:#35353d;
-    --ink:#eceaf0; --ink-2:#a5a2ad; --ink-3:#73707c;
+    --paper:#141418; --card:#1d1d22; --sunk:#2a2a31; --rule:#36363f;
+    --ink:#eceaf0; --ink-2:#a8a5b0; --ink-3:#76737f;
     --ok:#62c98e; --ok-bg:#15291f;
     --warn:#dca94f; --warn-bg:#2b2114;
     --bad:#ef8b80; --bad-bg:#2e1716;
+    --na:#4a4751;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --paper:#16161a; --card:#1e1e23; --sunk:#26262c; --rule:#35353d;
-  --ink:#eceaf0; --ink-2:#a5a2ad; --ink-3:#73707c;
+  --paper:#141418; --card:#1d1d22; --sunk:#2a2a31; --rule:#36363f;
+  --ink:#eceaf0; --ink-2:#a8a5b0; --ink-3:#76737f;
   --ok:#62c98e; --ok-bg:#15291f;
   --warn:#dca94f; --warn-bg:#2b2114;
   --bad:#ef8b80; --bad-bg:#2e1716;
+  --na:#4a4751;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-body{
-  margin:0; background:var(--paper); color:var(--ink);
-  font-family:var(--sans); font-size:16px; line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-}
-.sheet{
-  max-width:820px; margin:0 auto;
-  padding-left:max(16px,env(safe-area-inset-left,0px));
-  padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-block:40px 72px;
-}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased}
+.sheet{max-width:840px; margin:0 auto; padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px)); padding-block:36px 72px}
 h1,h2,h3,h4{text-wrap:balance; margin:0}
-code,.num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+code{font-family:var(--mono); font-variant-numeric:tabular-nums}
+button{font:inherit}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 .eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); margin:0 0 12px; font-weight:500}
 h1{font-size:clamp(30px,6vw,42px); line-height:1.1; letter-spacing:-.025em; font-weight:600}
 .meta{color:var(--ink-2); font-size:14.5px; margin:10px 0 0}
 .meta .dot{color:var(--ink-3); margin:0 7px}
 
-.summary{display:flex; gap:30px; align-items:center; flex-wrap:wrap; background:var(--card); border:1px solid var(--rule); border-radius:12px; padding:26px; margin:30px 0 14px}
-.dial{position:relative; flex:0 0 136px; width:136px; height:136px}
+.summary{display:flex; gap:28px; align-items:center; flex-wrap:wrap; background:var(--card); border:1px solid var(--rule); border-radius:12px; padding:24px; margin:28px 0 12px}
+.dial{position:relative; flex:0 0 132px; width:132px; height:132px}
 .dial svg{display:block; transform:rotate(-90deg)}
 .dial-txt{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center}
-.dial-pct{font-family:var(--mono); font-size:34px; font-weight:600; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums}
+.dial-pct{font-family:var(--mono); font-size:33px; font-weight:600; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums}
 .dial-cap{font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-top:6px}
-.summary-body{flex:1 1 300px; min-width:0}
+.summary-body{flex:1 1 290px; min-width:0}
 .summary-body h2{font-size:22px; letter-spacing:-.015em; font-weight:600; margin-bottom:8px}
 .summary-body p{margin:0; color:var(--ink-2); font-size:15px}
-.arith{font-family:var(--mono); font-size:12.5px; color:var(--ink-3); margin-top:14px}
+.arith{font-family:var(--mono); font-size:12.5px; color:var(--ink-3); margin-top:13px}
 
-.gate{display:flex; gap:12px; align-items:flex-start; border-radius:10px; padding:16px 18px; margin-bottom:38px}
+.dist{background:var(--card); border:1px solid var(--rule); border-radius:12px; padding:18px 22px 20px; margin-bottom:12px}
+.dist-bar{display:flex; height:16px; border-radius:5px; overflow:hidden; gap:2px; margin-bottom:14px}
+.dist-bar i{display:block}
+.dist-bar .s-bad{background:var(--bad)}
+.dist-bar .s-warn{background:var(--warn)}
+.dist-bar .s-ok{background:var(--ok)}
+.dist-bar .s-na{background:var(--na)}
+.key{display:flex; flex-wrap:wrap; gap:7px 20px}
+.key div{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--ink-2)}
+.key b{font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--ink); font-weight:600}
+.swatch{width:11px; height:11px; border-radius:3px; flex:0 0 auto}
+
+section{margin-bottom:34px}
+h3.rule{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding-bottom:9px; border-bottom:1px solid var(--rule); margin-bottom:15px; display:flex; justify-content:space-between; gap:12px; align-items:baseline; flex-wrap:wrap}
+h3.rule em{font-style:normal; color:var(--ink-3); letter-spacing:.06em}
+
+.gate{display:flex; gap:12px; align-items:flex-start; border-radius:10px; padding:15px 18px; margin-bottom:34px}
 .gate.fail{background:var(--bad-bg); border:1px solid color-mix(in srgb,var(--bad) 32%,transparent)}
 .gate.fail .gate-mark,.gate.fail strong{color:var(--bad)}
 .gate.pass{background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 28%,transparent)}
@@ -79,59 +91,67 @@ h1{font-size:clamp(30px,6vw,42px); line-height:1.1; letter-spacing:-.025em; font
 .gate strong{display:block; font-size:15px; margin-bottom:3px}
 .gate p{margin:0; font-size:14px; color:var(--ink)}
 
-section{margin-bottom:38px}
-h3.rule{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding-bottom:9px; border-bottom:1px solid var(--rule); margin-bottom:16px}
-
-.good{display:flex; gap:11px; padding:11px 0; border-bottom:1px solid var(--rule)}
+.good{display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--rule)}
 .good:last-child{border-bottom:0}
 .good-mark{color:var(--ok); font-weight:700; flex:0 0 auto}
 .good p{margin:0; font-size:15px}
 .good .where{display:block; font-family:var(--mono); font-size:12px; color:var(--ink-3); margin-top:3px}
 
-.layers{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:9px}
-.lyr{background:var(--card); border:1px solid var(--rule); border-radius:8px; padding:12px 14px; border-left:3px solid var(--rule); min-width:0}
-.lyr.ok{border-left-color:var(--ok)}
-.lyr.wn{border-left-color:var(--warn)}
-.lyr.bd{border-left-color:var(--bad)}
-.lyr.na{opacity:.48}
-.lyr-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
-.lyr-name{font-size:13.5px; font-weight:500; letter-spacing:-.005em; min-width:0}
-.lyr-score{font-family:var(--mono); font-size:12.5px; font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums}
-.lyr.ok .lyr-score{color:var(--ok)}
-.lyr.wn .lyr-score{color:var(--warn)}
-.lyr.bd .lyr-score{color:var(--bad)}
-.lyr.na .lyr-score{color:var(--ink-3)}
-.lyr-n{font-family:var(--mono); font-size:10.5px; color:var(--ink-3)}
-.g-tag{display:inline-block; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; background:var(--sunk); color:var(--ink-3); padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:1.5px}
+.layers{display:grid; grid-template-columns:1fr; gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:10px; overflow:hidden}
+@media(min-width:620px){ .layers{grid-template-columns:1fr 1fr} }
+.lyr{display:flex; align-items:center; gap:12px; background:var(--card); padding:11px 14px; min-width:0}
+.lyr-n{font-family:var(--mono); font-size:11px; color:var(--ink-3); flex:0 0 20px; text-align:right; font-variant-numeric:tabular-nums}
+.lyr-name{flex:1 1 auto; min-width:0; font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.meter{flex:0 0 62px; height:8px; border-radius:4px; background:repeating-linear-gradient(90deg, var(--sunk) 0 5px, transparent 5px 6.2px); background-color:var(--sunk); overflow:hidden; position:relative}
+.meter i{display:block; height:100%; border-radius:4px}
+.m-ok i{background:var(--ok)} .m-warn i{background:var(--warn)} .m-bad i{background:var(--bad)}
+.lyr-score{font-family:var(--mono); font-size:12.5px; font-weight:600; flex:0 0 42px; text-align:right; font-variant-numeric:tabular-nums}
+.s-ok{color:var(--ok)} .s-warn{color:var(--warn)} .s-bad{color:var(--bad)}
+.lyr.na{opacity:.55}
+.lyr.na .lyr-score{color:var(--ink-3); font-size:11.5px}
+.g-dot{flex:0 0 auto; width:5px; height:5px; border-radius:50%; background:var(--ink-3); margin-left:-5px}
+.na-why{font-family:var(--mono); font-size:10.5px; color:var(--ink-3); white-space:nowrap}
 
 .find{background:var(--card); border:1px solid var(--rule); border-radius:10px; padding:20px 22px; margin-bottom:12px; border-left:3px solid var(--rule)}
 .find.crit{border-left-color:var(--bad)}
 .find.high{border-left-color:var(--warn)}
-.find-top{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; margin-bottom:15px}
+.find-top{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; margin-bottom:14px}
 .find-top h4{font-size:17px; font-weight:600; letter-spacing:-.015em; min-width:0; flex:1 1 220px}
 .tags{display:flex; gap:6px; flex-wrap:wrap}
-.tag{font-family:var(--mono); font-size:10.5px; padding:3px 8px; border-radius:20px; background:var(--sunk); color:var(--ink-2); white-space:nowrap; letter-spacing:.02em}
+.tag{font-family:var(--mono); font-size:10.5px; padding:3px 8px; border-radius:20px; background:var(--sunk); color:var(--ink-2); white-space:nowrap}
 .tag.bad{background:var(--bad-bg); color:var(--bad)}
 .tag.warn{background:var(--warn-bg); color:var(--warn)}
 .row{margin-bottom:11px}
-.row:last-child{margin-bottom:0}
-.lbl{font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); margin-bottom:3px}
 .row p{margin:0; font-size:14.5px}
 .row.why p{color:var(--ink-2)}
-code{background:var(--sunk); padding:2px 5px; border-radius:4px; font-size:12.5px}
-pre{background:var(--sunk); border:1px solid var(--rule); border-radius:7px; padding:12px 14px; margin:8px 0 0; overflow-x:auto; font-size:12.5px; line-height:1.55}
-pre code{background:none; padding:0}
+.lbl{font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); margin-bottom:3px}
+.row code{background:var(--sunk); padding:2px 5px; border-radius:4px; font-size:12.5px}
 
-.win{display:flex; gap:12px; align-items:flex-start; background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 26%,transparent); border-radius:9px; padding:14px 16px; margin-bottom:9px}
+.prompt{margin-top:14px; border:1px solid var(--rule); border-radius:8px; background:var(--paper); overflow:hidden}
+.prompt summary{cursor:pointer; list-style:none; padding:11px 14px; display:flex; align-items:center; gap:9px; font-size:13.5px; font-weight:500; color:var(--ink-2)}
+.prompt summary::-webkit-details-marker{display:none}
+.prompt summary:focus-visible{outline:2px solid var(--ink-2); outline-offset:-2px}
+.chev{font-family:var(--mono); color:var(--ink-3); font-size:11px; transition:transform .15s}
+.prompt[open] .chev{transform:rotate(90deg)}
+.prompt summary b{font-weight:600; color:var(--ink)}
+.prompt-body{padding:0 14px 14px}
+.prompt-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap}
+.prompt-head span{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+.copy{font-family:var(--mono); font-size:11.5px; padding:5px 11px; border-radius:6px; cursor:pointer; background:var(--ink); color:var(--paper); border:1px solid var(--ink)}
+.copy:hover{opacity:.86}
+.copy:focus-visible{outline:2px solid var(--ink-2); outline-offset:2px}
+pre{background:var(--sunk); border:1px solid var(--rule); border-radius:7px; padding:13px 15px; margin:0; overflow-x:auto; font-size:12.5px; line-height:1.6; font-family:var(--mono); white-space:pre-wrap; word-break:break-word}
+
+.win{display:flex; gap:12px; align-items:flex-start; background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 26%,transparent); border-radius:9px; padding:13px 16px; margin-bottom:9px}
 .win-mark{color:var(--ok); font-weight:700; flex:0 0 auto; font-family:var(--mono); font-size:13px}
 .win p{margin:0; font-size:14.5px; min-width:0}
 .win b{display:block; font-weight:600; margin-bottom:2px}
 .win span{color:var(--ink-2); font-size:13.5px}
 
 ol.order{counter-reset:o; list-style:none; margin:0; padding:0}
-ol.order li{counter-increment:o; position:relative; padding:11px 0 11px 40px; border-bottom:1px solid var(--rule); font-size:15px}
+ol.order li{counter-increment:o; position:relative; padding:10px 0 10px 40px; border-bottom:1px solid var(--rule); font-size:15px}
 ol.order li:last-child{border-bottom:0}
-ol.order li::before{content:counter(o); position:absolute; left:0; top:12px; width:24px; height:24px; border-radius:50%; background:var(--sunk); color:var(--ink-2); font-family:var(--mono); font-size:11.5px; font-weight:600; display:flex; align-items:center; justify-content:center}
+ol.order li::before{content:counter(o); position:absolute; left:0; top:11px; width:24px; height:24px; border-radius:50%; background:var(--sunk); color:var(--ink-2); font-family:var(--mono); font-size:11.5px; font-weight:600; display:flex; align-items:center; justify-content:center}
 ol.order .sub{display:block; color:var(--ink-3); font-size:13px; margin-top:2px}
 
 footer{border-top:1px solid var(--rule); padding-top:20px; color:var(--ink-3); font-size:12.5px}
@@ -146,10 +166,10 @@ footer p{margin:0 0 6px}
 
   <div class="summary">
     <div class="dial">
-      <svg width="136" height="136" viewBox="0 0 136 136" aria-hidden="true">
-        <circle cx="68" cy="68" r="58" fill="none" stroke="var(--sunk)" stroke-width="11"/>
+      <svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">
+        <circle cx="66" cy="66" r="58" fill="none" stroke="var(--sunk)" stroke-width="11"/>
         <!-- RING_FILLED = round(364.4 * PCT / 100). RING_COLOR: var(--ok) >=80, var(--warn) 60-79, var(--bad) <60 -->
-        <circle cx="68" cy="68" r="58" fill="none" stroke="{{RING_COLOR}}" stroke-width="11"
+        <circle cx="66" cy="66" r="58" fill="none" stroke="{{RING_COLOR}}" stroke-width="11"
                 stroke-linecap="round" stroke-dasharray="{{RING_FILLED}} 364.4"/>
       </svg>
       <div class="dial-txt">
@@ -161,6 +181,22 @@ footer p{margin:0 0 6px}
       <h2>{{VERDICT_HEADLINE}}</h2>
       <p>{{VERDICT_DETAIL}}</p>
       <p class="arith">{{EARNED}} of {{APPLICABLE}} points · {{N_SCORED}} layers scored · {{N_NA}} not applicable{{TIER_NOTE}}</p>
+    </div>
+  </div>
+
+  <!-- Distribution: flex values are the COUNTS of layers in each band. Delete any band with a count of 0. -->
+  <div class="dist">
+    <div class="dist-bar" role="img" aria-label="{{N_BAD}} critical, {{N_WARN}} needs work, {{N_OK}} solid, {{N_NA}} not applicable">
+      <i class="s-bad" style="flex:{{N_BAD}}"></i>
+      <i class="s-warn" style="flex:{{N_WARN}}"></i>
+      <i class="s-ok" style="flex:{{N_OK}}"></i>
+      <i class="s-na" style="flex:{{N_NA}}"></i>
+    </div>
+    <div class="key">
+      <div><span class="swatch" style="background:var(--bad)"></span><b>{{N_BAD}}</b> critical</div>
+      <div><span class="swatch" style="background:var(--warn)"></span><b>{{N_WARN}}</b> needs work</div>
+      <div><span class="swatch" style="background:var(--ok)"></span><b>{{N_OK}}</b> solid</div>
+      <div><span class="swatch" style="background:var(--na)"></span><b>{{N_NA}}</b> not applicable</div>
     </div>
   </div>
 
@@ -180,23 +216,32 @@ footer p{margin:0 0 6px}
   </section>
 
   <section>
-    <h3 class="rule">All layers at a glance</h3>
+    <h3 class="rule">All 23 layers <em>score out of 10</em></h3>
     <div class="layers">
-      <!-- repeat .lyr for all 23 layers in order. class: ok 7-10 / wn 4-6 / bd 1-3 / na -->
-      <!-- keep <span class="g-tag">gate</span> only on gate layers (4, 8, 12, 13, and 18/20 when they apply) -->
-      <div class="lyr ok">
-        <div class="lyr-top">
-          <span class="lyr-name">{{LAYER_NAME}}<span class="g-tag">gate</span></span>
-          <span class="lyr-score">{{LAYER_SCORE}}</span>
-        </div>
-        <span class="lyr-n">Layer {{LAYER_NUM}}{{LAYER_NA_REASON}}</span>
+      <!-- SCORED layer. meter class m-ok (7-10) / m-warn (4-6) / m-bad (1-3); score class s-ok / s-warn / s-bad.
+           Bar width = score * 10%.  Insert <span class="g-dot" title="Gate layer"></span> after the
+           name on gate layers only (4, 8, 12, 13, and 18/20 when they apply). Repeat for all scored layers. -->
+      <div class="lyr">
+        <span class="lyr-n">{{LAYER_NUM}}</span>
+        <span class="lyr-name">{{LAYER_NAME}}</span>
+        <span class="meter m-warn"><i style="width:{{SCORE_PCT}}%"></i></span>
+        <span class="lyr-score s-warn">{{LAYER_SCORE}}/10</span>
+      </div>
+      <!-- N/A layer -->
+      <div class="lyr na">
+        <span class="lyr-n">{{LAYER_NUM}}</span>
+        <span class="lyr-name">{{LAYER_NAME}}</span>
+        <span class="na-why">{{NA_REASON}}</span>
+        <span class="lyr-score">N/A</span>
       </div>
     </div>
   </section>
 
   <section>
-    <h3 class="rule">What needs fixing</h3>
-    <!-- repeat article.find, worst first. class: crit (gate/red) or high (amber) -->
+    <h3 class="rule">What needs fixing <em>{{SEVERITY_COUNTS}}</em></h3>
+
+    <!-- repeat article.find, worst first. class: crit (gate/red) or high (amber).
+         Give every finding a fix prompt, with a UNIQUE id on the <pre> matching data-copy. -->
     <article class="find crit">
       <div class="find-top">
         <h4>{{FINDING_TITLE}}</h4>
@@ -208,13 +253,15 @@ footer p{margin:0 0 6px}
       </div>
       <div class="row"><div class="lbl">What</div><p>{{FINDING_WHAT}}</p></div>
       <div class="row why"><div class="lbl">Why it matters</div><p>{{FINDING_WHY}}</p></div>
-      <div class="row">
-        <div class="lbl">Fix</div>
-        <p>{{FINDING_FIX}}</p>
-        <!-- delete the pre block when a snippet would not genuinely help -->
-        <pre><code>{{FINDING_SNIPPET}}</code></pre>
-      </div>
       <div class="row"><div class="lbl">Found in</div><p><code>{{FINDING_EVIDENCE}}</code></p></div>
+
+      <details class="prompt">
+        <summary><span class="chev">▸</span><b>Fix prompt</b> — paste this into Claude Code or your AI assistant</summary>
+        <div class="prompt-body">
+          <div class="prompt-head"><span>Includes how to verify it worked</span><button class="copy" data-copy="{{PROMPT_ID}}">Copy prompt</button></div>
+<pre id="{{PROMPT_ID}}">{{FIX_PROMPT}}</pre>
+        </div>
+      </details>
     </article>
   </section>
 
@@ -239,3 +286,31 @@ footer p{margin:0 0 6px}
   </footer>
 
 </div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var pre = document.getElementById(btn.getAttribute('data-copy'));
+    if(!pre) return;
+    var done = function(label){
+      btn.textContent = label;
+      setTimeout(function(){ btn.textContent = 'Copy prompt'; }, 1800);
+    };
+    var fallback = function(){
+      try{
+        var r = document.createRange();
+        r.selectNodeContents(pre);
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+        done('Selected — press copy');
+      }catch(e){ done('Select it manually'); }
+    };
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(pre.innerText).then(function(){ done('Copied'); }, fallback);
+      } else { fallback(); }
+    }catch(e){ fallback(); }
+  });
+});
+</script>
