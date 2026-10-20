@@ -206,7 +206,8 @@ Report which of these you ran and which I need to run myself.
   startup and treated anything but 200 as "offline". Name the callers in the
   prompt, and when the app is one of them, ask for a separate endpoint.
 - **Monitoring findings point to a tool.** For a missing uptime check or
-  heartbeat, recommend Better Stack and how to connect it to Claude, as
+  heartbeat, recommend Better Stack; for missing error tracking, Sentry, with
+  its personal-data settings. Say how to connect each to Claude, as
   `monitoring.md` describes. "Add monitoring" on its own gives the reader
   nothing to do.
 - Write them in the user's register. The person pasting this may not know what

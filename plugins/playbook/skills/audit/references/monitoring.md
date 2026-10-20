@@ -1,9 +1,14 @@
-# Monitoring — Better Stack
+# Monitoring — Better Stack and Sentry
 
 Layer 12's discovery question is *"if this went down right now, how would you
-find out?"* The code alone can't fully answer it: an uptime monitor lives
-outside the repo. This file covers the tool the audit recommends for that gap,
-and how to check it live when it's connected.
+find out?"* The code alone can't fully answer it: uptime monitors and error
+reports live outside the repo. This file covers the two tools the audit
+recommends, **Better Stack** for "is it up?" and **Sentry** for "is it
+throwing errors?", and how to check each live when it's connected.
+
+Neither one replaces the other. A green uptime monitor says nothing about a
+broken save button; an empty Sentry inbox says nothing about a Worker that
+stopped answering. Sentry alone does **not** clear Layer 12's hard cap.
 
 ---
 
@@ -78,3 +83,91 @@ How it changes the score:
   recovery looked like, not as a score penalty on their own.
 - **Monitors for other projects** in the same account are none of the audit's
   business. Don't list them in the report.
+
+---
+
+## Sentry
+
+### What to recommend
+
+When Layer 12 finds no error tracking, or tracking on one side only, recommend
+**Sentry** on both the frontend and the backend. Put these in the fix prompt,
+because error reports are full of user data by default:
+
+- **Send no personal data:** `sendDefaultPii: false` (or the stack's
+  equivalent); no request bodies, headers, cookies or query strings; no IP
+  addresses. Strip what's left in `beforeSend`.
+- **Session replays, if used:** mask all text and inputs and block media.
+- **Data region:** pick the EU region when the users are in the UK or EU.
+- **An alert rule** for new issues and for a spike in errors, sent somewhere
+  the owner reads.
+- **Delete a user's events when they delete their account**, or keep events
+  for a short retention period. Note it under Layer 16.
+
+### Connect it to Claude
+
+- **claude.ai and Claude Code on the web:** add a custom connector at
+  https://claude.ai/customize/connectors with the URL
+  `https://mcp.sentry.dev/mcp`, sign in to Sentry, then start a new session.
+- **Claude Code in a terminal:**
+  `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp`, then
+  sign in when prompted.
+
+### Checking it live during an audit
+
+As with Better Stack, **you check it yourself, before the review tasks**,
+then pass a one- or two-line summary to the task covering Layer 12. Look for
+Sentry tools in your tool list (names containing `Sentry` or `sentry`). If
+they aren't there, write "Sentry not connected; error tracking scored from the
+code only" in the task's context and in `{{SCOPE_NOTE}}`.
+
+**Sentry holds the project's user data: error messages, URLs, user ids,
+sometimes emails and IP addresses. The audit report gets shared. So the audit
+asks Sentry for counts and settings, never for the content of an error.**
+
+Allowed, read-only:
+
+| Question | Tool | Ask for |
+|---|---|---|
+| Which organisation and project belong to this app? | `find_organizations`, `find_projects` | Names only |
+| Do both the frontend and the backend send errors? | `search_errors` | **Aggregates only**: `count()` grouped by `logger`, `platform`, `environment` or `project`, over 30 days |
+| Is anyone dealing with the errors? | `search_issues` | How many issues are unresolved and how old the oldest is. Use the counts and dates, not the titles |
+
+Never used, whatever the question:
+
+- **Anything that changes Sentry**: `update_issue`, resolving, assigning,
+  creating alerts, `execute_sentry_tool`.
+- **Anything that opens a single event or a user's session**: `search_errors`
+  without aggregate fields (it returns individual events),
+  `get_sentry_resource` on an event or issue, `search_replays`,
+  `search_logs`, `search_traces`, `search_profiles`.
+- **`analyze_issue_with_seer`**: it sends the issue's data for AI analysis.
+
+**What may go into the report, the chat or a review task's prompt:**
+
+- Allowed: the organisation and project names; event counts per side and per
+  environment; the number of unresolved issues and the date of the oldest;
+  whether both sides report.
+- Never:
+  - an issue title or error message as written (titles often contain
+    emails, ids or URLs with tokens);
+  - any user field, IP address, request URL, header, body, breadcrumb, stack
+    variable or replay;
+  - a DSN beyond saying where it's configured.
+- If a finding needs to say which error, describe it in your own words from
+  the code, e.g. *"an unhandled error when saving a route
+  (`src/routes/save.ts:41`)"*, never from Sentry's copy of the message.
+
+How it changes the score:
+
+- **Events from both sides in the last 30 days:** credits Layer 12's
+  "frontend and backend" check. Cite it as *"Sentry project `<name>`: N app
+  events and N backend events in 30 days"*.
+- **Integrated in the code but no events ever:** the DSN is probably unset or
+  wrong. Say so; it's worth less than the code suggests.
+- **Unresolved issues weeks old and still recurring:** errors arrive but
+  nobody acts on them. Note it under Layer 12 as a process finding, without
+  naming the issues.
+- **Personal data in the configuration** (`sendDefaultPii: true`, request
+  bodies sent, replays unmasked): a Layer 8 finding, found in the **code**,
+  not by looking at events.
