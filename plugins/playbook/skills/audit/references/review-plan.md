@@ -88,7 +88,13 @@ yourself** for:
   to mark layers N/A too readily
 
 If a citation does not say what the reviewer claimed, fix the score or drop
-the finding. Then merge the results and continue with `scoring.md`.
+the finding.
+
+Write the check down. In your notes file, one row per item above:
+`claim | file:line | what the line actually shows | ✅ / ❌`. Open every line
+yourself; a reviewer's line number is a pointer, not proof. Do not start the
+report until every row is filled. A Critical finding with no ✅ row does not
+go in the report. Then merge the results and continue with `scoring.md`.
 
 ## 5. The task prompt
 
