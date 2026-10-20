@@ -50,6 +50,9 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 | `{{PREV_DATE}}` `{{PREV_PCT}}` | The earlier report's date and percentage |
 | `{{PREV_SUMMARY}}` | Delta (or "not comparable" if the layers differ), the counts of fixed / partly / not fixed, and any layer that went **down**. Count only problems the earlier report actually listed. "Fixed" means fully resolved at the cited line; anything less is partly |
 | `{{PREV_PATH}}` | Where the earlier report lives in the project |
+| `{{MORE_COUNT}}` | How many findings are in the compact table |
+| `{{MORE_WHAT}}` `{{MORE_LAYER}}` `{{MORE_EVIDENCE}}` `{{MORE_EFFORT}}` | One row each: the problem in one line, its layer, its `file:line`, and Low/Medium/High |
+| `{{MORE_NOTE}}` | Why these have no fix prompt, e.g. "Below the top 15 by severity. Ask for a fix prompt for any of them." |
 | `{{PREV_MARK}}` | ✅ fixed · ⚠️ partly fixed · ❌ not fixed |
 | `{{PREV_ITEM}}` | The earlier problem, in one line, as that report described it |
 | `{{PREV_EVIDENCE}}` | The `file:line` you checked to decide the mark |
@@ -93,8 +96,23 @@ reason stands on its own and `{{LAYER_EVIDENCE}}` can be dropped. A layer you
 could not assess says so here in `{{LAYER_WHY}}` rather than carrying an
 invented citation.
 
-**Findings** — one per real problem, worst first. `crit` for gate failures and
-🔴 layers, `high` for 🟡.
+**Findings** — worst first, and **capped**. A real audit produces far more
+problems than a reader will work through: the test run found about 45, of which
+15 got fix prompts and the rest were silently dropped. That choice belongs here,
+not to whoever is running out of room.
+
+| Severity | Treatment |
+|---|---|
+| **Critical** and **High** | A full card with a fix prompt — **up to 15 cards total** |
+| Anything beyond the 15th, and every **Medium** / **Low** | One row in the compact table below the cards: What · Layer · `file:line` · Effort. No fix prompt |
+
+If the cap bites, say so under the table: *"18 further findings are listed
+below without fix prompts."* Never drop a finding without recording it
+somewhere.
+
+Card class: `crit` for gate failures and 🔴 layers, `high` for High, `med` for
+Medium and Low (used only when fewer than 15 Critical/High findings exist and
+there is room to promote one).
 
 - `{{SEVERITY}}` — "Critical" / "High" (pill `bad`), "Medium" (pill `warn`), "Low"
 - `{{EFFORT}}` — "Low effort" / "Medium effort" / "High effort"

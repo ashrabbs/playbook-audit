@@ -115,6 +115,16 @@ h3.rule em{font-style:normal; color:var(--ink-3); letter-spacing:.06em}
 .find{background:var(--card); border:1px solid var(--rule); border-radius:10px; padding:20px 22px; margin-bottom:12px; border-left:3px solid var(--rule)}
 .find.crit{border-left-color:var(--bad)}
 .find.high{border-left-color:var(--warn)}
+.find.med{border-left-color:var(--na)}
+.more{width:100%; border-collapse:collapse; margin-top:4px; font-size:13.5px}
+.more th{text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding:0 10px 7px 0; border-bottom:1px solid var(--rule)}
+.more td{padding:9px 10px 9px 0; border-bottom:1px solid var(--rule); vertical-align:top}
+.more tr:last-child td{border-bottom:0}
+.more td code{background:var(--sunk); padding:2px 5px; border-radius:4px; font-size:11.5px}
+.more .c-layer{white-space:nowrap; color:var(--ink-3); font-family:var(--mono); font-size:11.5px}
+.more .c-effort{white-space:nowrap; color:var(--ink-2); font-size:12.5px}
+.more-note{font-size:13px; color:var(--ink-3); margin:12px 0 0}
+.more-wrap{overflow-x:auto}
 .find-top{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; margin-bottom:14px}
 .find-top h4{font-size:17px; font-weight:600; letter-spacing:-.015em; min-width:0; flex:1 1 220px}
 .tags{display:flex; gap:6px; flex-wrap:wrap}
@@ -277,6 +287,29 @@ footer p{margin:0 0 6px}
         </div>
       </details>
     </article>
+
+    <!-- Everything past the 15-card cap, and every Medium / Low finding.
+         Delete this whole block if there are none. -->
+    <details class="prompt" style="margin-top:14px">
+      <summary><span class="chev">▸</span><b>{{MORE_COUNT}} further findings</b> — no fix prompts</summary>
+      <div class="prompt-body">
+        <div class="more-wrap">
+          <table class="more">
+            <thead><tr><th>What</th><th>Layer</th><th>Found in</th><th>Effort</th></tr></thead>
+            <tbody>
+              <!-- repeat one row per remaining finding -->
+              <tr>
+                <td>{{MORE_WHAT}}</td>
+                <td class="c-layer">{{MORE_LAYER}}</td>
+                <td><code>{{MORE_EVIDENCE}}</code></td>
+                <td class="c-effort">{{MORE_EFFORT}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="more-note">{{MORE_NOTE}}</p>
+      </div>
+    </details>
   </section>
 
   <section>
