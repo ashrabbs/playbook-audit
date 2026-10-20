@@ -48,8 +48,11 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 | `{{SEVERITY_COUNTS}}` | e.g. `3 critical · 2 high` |
 | `{{SCOPE_NOTE}}` | Any limit on what you read, and how the review was split (e.g. "Reviewed in 4 parallel tasks; gate findings re-checked by hand") — or delete the line |
 | `{{PREV_DATE}}` `{{PREV_PCT}}` | The earlier report's date and percentage |
-| `{{PREV_SUMMARY}}` | Delta, how many earlier problems are fixed / partly / not fixed, and any layer that went **down**. If the earlier report used different layers, say the percentages are not directly comparable |
+| `{{PREV_SUMMARY}}` | Delta (or "not comparable" if the layers differ), the counts of fixed / partly / not fixed, and any layer that went **down**. Count only problems the earlier report actually listed. "Fixed" means fully resolved at the cited line; anything less is partly |
 | `{{PREV_PATH}}` | Where the earlier report lives in the project |
+| `{{PREV_MARK}}` | ✅ fixed · ⚠️ partly fixed · ❌ not fixed |
+| `{{PREV_ITEM}}` | The earlier problem, in one line, as that report described it |
+| `{{PREV_EVIDENCE}}` | The `file:line` you checked to decide the mark |
 
 ### The dial
 

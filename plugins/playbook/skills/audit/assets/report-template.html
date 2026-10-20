@@ -289,6 +289,8 @@ footer p{margin:0 0 6px}
   <section>
     <h3 class="rule">Since the last audit <em>{{PREV_DATE}} · {{PREV_PCT}}%</em></h3>
     <div class="good"><span class="good-mark">↻</span><p>{{PREV_SUMMARY}}<span class="where">{{PREV_PATH}}</span></p></div>
+    <!-- repeat once per problem the earlier report raised. Mark: ✅ fixed · ⚠️ partly · ❌ not fixed -->
+    <div class="good"><span class="good-mark">{{PREV_MARK}}</span><p>{{PREV_ITEM}}<span class="where">{{PREV_EVIDENCE}}</span></p></div>
   </section>
 
   <section>
