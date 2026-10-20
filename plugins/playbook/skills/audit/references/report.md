@@ -8,6 +8,12 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 
 1. **Read the template.** It uses `{{PLACEHOLDER}}` markers and repeatable
    blocks marked with HTML comments.
+
+   The template is deliberately a **fragment** — it has no `<!doctype>`,
+   `<html>`, `<head>` or `<body>` tags. Publishing it as an artifact wraps it in
+   that skeleton automatically, and a browser opening it as a local file
+   supplies the same tags itself. **Do not add them**, or the artifact publish
+   breaks.
 2. **Write the filled file outside the project** — a temp directory or the
    user's home directory. Never inside the audited repo. Name it
    `<project>-readiness-<YYYY-MM-DD>.html`.
@@ -28,7 +34,7 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 | `{{PROJECT_PATH}}` | Absolute path audited |
 | `{{PCT}}` | The percentage, integer, no `%` sign |
 | `{{RING_FILLED}}` | **Compute:** `round(364.4 × PCT / 100)` |
-| `{{RING_COLOR}}` | `var(--green)` ≥80 · `var(--amber)` 60–79 · `var(--red)` <60 |
+| `{{RING_COLOR}}` | `var(--ok)` ≥80 · `var(--warn)` 60–79 · `var(--bad)` <60 |
 | `{{VERDICT_HEADLINE}}` | "Production ready" / "Close — fix critical gaps first" / "Not production ready" / "Demo-grade only". **If a gate failed, this says "Not production ready" regardless of the band** |
 | `{{VERDICT_DETAIL}}` | One or two sentences. Lead with the single most important thing |
 | `{{EARNED}}` `{{APPLICABLE}}` `{{N_SCORED}}` `{{N_NA}}` | The scoring arithmetic |
@@ -53,20 +59,23 @@ per item and delete the comment.
 report opening with twenty failures gets closed. Never fabricate one; if there
 are genuinely only two, use two.
 
-**Layer grid** — one `.layer` per layer, all 23, in order. Class:
+**Layer grid** — one `.lyr` per layer, all 23, in order. Class:
 
 | Class | Score |
 |---|---|
-| `g` | 7–10 |
-| `a` | 4–6 |
-| `r` | 1–3 |
+| `ok` | 7–10 |
+| `wn` | 4–6 |
+| `bd` | 1–3 |
 | `na` | N/A — set `{{LAYER_SCORE}}` to `N/A` |
 
-Keep `<span class="gate-tag">Gate</span>` only on gate layers (4, 8, 12, 13, and
+For an N/A layer, use `{{LAYER_NA_REASON}}` to give the reason inline, as
+` — serverless` or ` — no AI features`. Leave it empty on scored layers.
+
+Keep `<span class="g-tag">gate</span>` only on gate layers (4, 8, 12, 13, and
 18/20 when they apply). Delete it everywhere else.
 
 **Findings** — one per real problem, ordered worst first. Use `crit` for gate
-failures and 🔴 layers, `warn` for 🟡.
+failures and 🔴 layers, `high` for 🟡.
 
 - `{{SEVERITY}}` — "Critical" (pill `red`), "High" (pill `red`), "Medium"
   (pill `amber`), "Low" (pill default)
@@ -76,7 +85,8 @@ failures and 🔴 layers, `warn` for 🟡.
 - `{{FINDING_EVIDENCE}}` — `src/routes/auth.ts:42`
 
 **Quick wins** — 2 or 3. Under an hour each, real impact, specific file. For a
-non-developer this is the most valuable part of the report.
+non-developer this is the most valuable part of the report. `{{WIN_TIME}}` is a
+short time estimate shown as the marker, e.g. `20m` or `45m`.
 
 **Priority order** — the numbered list from `scoring.md`, reduced to the items
 that actually apply to this project. Do not list a priority with no finding

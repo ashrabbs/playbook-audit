@@ -1,306 +1,241 @@
-<!doctype html>
-<html lang="en" data-theme="auto">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{PROJECT_NAME}} — Production Readiness Report</title>
+<!--
+  Report template. Fill the {{PLACEHOLDER}} markers and duplicate the blocks
+  marked "repeat" once per item.
+
+  This file is deliberately a FRAGMENT: no <!doctype>, <html>, <head> or <body>.
+  Publishing it as an artifact wraps it in that skeleton automatically, and a
+  browser opening it as a local file supplies the same tags itself. Adding them
+  here breaks the artifact publish.
+-->
+<title>{{PROJECT_NAME}} Readiness Report</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
+/* Layout: single measured column; summary band, then layers, then findings. */
 :root{
-  --bg:#fbfbfa; --surface:#fff; --surface-2:#f4f4f2; --border:#e4e4e0;
-  --text:#1a1a18; --text-2:#5c5c57; --text-3:#8a8a83;
-  --green:#1a7f4b; --green-bg:#e8f5ee;
-  --amber:#9a6400; --amber-bg:#fdf3e2;
-  --red:#b3261e;   --red-bg:#fdeceb;
-  --accent:#1a1a18;
-  --radius:14px;
-  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --paper:#f7f6f4; --card:#ffffff; --sunk:#edebe7; --rule:#dedbd5;
+  --ink:#1c1b19; --ink-2:#595650; --ink-3:#8b877f;
+  --ok:#1d6f46; --ok-bg:#e6f1ea;
+  --warn:#8a5a06; --warn-bg:#f8f0df;
+  --bad:#a62f26; --bad-bg:#f9e9e7;
+  --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
-:root:not([data-theme="light"]){
-  @media (prefers-color-scheme:dark){
-    --bg:#131312; --surface:#1c1c1a; --surface-2:#232321; --border:#32322e;
-    --text:#f0f0ed; --text-2:#a8a8a1; --text-3:#78786f;
-    --green:#5fcf92; --green-bg:#16301f;
-    --amber:#e3ab4a; --amber-bg:#312612;
-    --red:#f08a84;   --red-bg:#331715;
-    --accent:#f0f0ed;
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#16161a; --card:#1e1e23; --sunk:#26262c; --rule:#35353d;
+    --ink:#eceaf0; --ink-2:#a5a2ad; --ink-3:#73707c;
+    --ok:#62c98e; --ok-bg:#15291f;
+    --warn:#dca94f; --warn-bg:#2b2114;
+    --bad:#ef8b80; --bad-bg:#2e1716;
+    color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#131312; --surface:#1c1c1a; --surface-2:#232321; --border:#32322e;
-  --text:#f0f0ed; --text-2:#a8a8a1; --text-3:#78786f;
-  --green:#5fcf92; --green-bg:#16301f;
-  --amber:#e3ab4a; --amber-bg:#312612;
-  --red:#f08a84;   --red-bg:#331715;
-  --accent:#f0f0ed;
+  --paper:#16161a; --card:#1e1e23; --sunk:#26262c; --rule:#35353d;
+  --ink:#eceaf0; --ink-2:#a5a2ad; --ink-3:#73707c;
+  --ok:#62c98e; --ok-bg:#15291f;
+  --warn:#dca94f; --warn-bg:#2b2114;
+  --bad:#ef8b80; --bad-bg:#2e1716;
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:var(--sans); line-height:1.6;
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.6;
   -webkit-font-smoothing:antialiased;
 }
-.wrap{max-width:860px; margin:0 auto; padding:48px 16px 80px}
-@media(max-width:600px){ .wrap{padding:28px 16px 56px} }
+.sheet{
+  max-width:820px; margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:40px 72px;
+}
+h1,h2,h3,h4{text-wrap:balance; margin:0}
+code,.num{font-family:var(--mono); font-variant-numeric:tabular-nums}
 
-/* ---------- header ---------- */
-.eyebrow{
-  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--text-3); font-weight:600; margin:0 0 10px
-}
-h1{font-size:clamp(28px,5vw,40px); line-height:1.15; margin:0 0 10px; letter-spacing:-.02em}
-.sub{color:var(--text-2); margin:0 0 32px; font-size:15px}
-.sub code{font-family:var(--mono); font-size:13px; background:var(--surface-2); padding:2px 6px; border-radius:5px}
+.eyebrow{font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); margin:0 0 12px; font-weight:500}
+h1{font-size:clamp(30px,6vw,42px); line-height:1.1; letter-spacing:-.025em; font-weight:600}
+.meta{color:var(--ink-2); font-size:14.5px; margin:10px 0 0}
+.meta .dot{color:var(--ink-3); margin:0 7px}
 
-/* ---------- verdict ---------- */
-.verdict{
-  display:flex; gap:28px; align-items:center; flex-wrap:wrap;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--radius); padding:28px; margin-bottom:16px
-}
-.ring{flex:0 0 132px; width:132px; height:132px; position:relative}
-.ring svg{transform:rotate(-90deg)}
-.ring-label{
-  position:absolute; inset:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:0
-}
-.ring-pct{font-size:32px; font-weight:700; letter-spacing:-.03em; line-height:1}
-.ring-cap{font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.1em; margin-top:4px}
-.verdict-body{flex:1 1 300px; min-width:260px}
-.verdict-body h2{margin:0 0 8px; font-size:21px; letter-spacing:-.01em}
-.verdict-body p{margin:0; color:var(--text-2); font-size:15px}
-.scorenote{font-size:13px; color:var(--text-3); margin-top:12px}
+.summary{display:flex; gap:30px; align-items:center; flex-wrap:wrap; background:var(--card); border:1px solid var(--rule); border-radius:12px; padding:26px; margin:30px 0 14px}
+.dial{position:relative; flex:0 0 136px; width:136px; height:136px}
+.dial svg{display:block; transform:rotate(-90deg)}
+.dial-txt{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center}
+.dial-pct{font-family:var(--mono); font-size:34px; font-weight:600; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums}
+.dial-cap{font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-top:6px}
+.summary-body{flex:1 1 300px; min-width:0}
+.summary-body h2{font-size:22px; letter-spacing:-.015em; font-weight:600; margin-bottom:8px}
+.summary-body p{margin:0; color:var(--ink-2); font-size:15px}
+.arith{font-family:var(--mono); font-size:12.5px; color:var(--ink-3); margin-top:14px}
 
-/* ---------- gate banner ---------- */
-.gate{
-  border-radius:var(--radius); padding:18px 22px; margin-bottom:32px;
-  border:1px solid; display:flex; gap:14px; align-items:flex-start
-}
-.gate.fail{background:var(--red-bg); border-color:var(--red); color:var(--red)}
-.gate.pass{background:var(--green-bg); border-color:var(--green); color:var(--green)}
+.gate{display:flex; gap:12px; align-items:flex-start; border-radius:10px; padding:16px 18px; margin-bottom:38px}
+.gate.fail{background:var(--bad-bg); border:1px solid color-mix(in srgb,var(--bad) 32%,transparent)}
+.gate.fail .gate-mark,.gate.fail strong{color:var(--bad)}
+.gate.pass{background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 28%,transparent)}
+.gate.pass .gate-mark,.gate.pass strong{color:var(--ok)}
+.gate-mark{font-weight:700; font-size:15px; flex:0 0 auto; line-height:1.5}
 .gate strong{display:block; font-size:15px; margin-bottom:3px}
-.gate span{color:var(--text-2); font-size:14px}
-.gate.fail span{color:var(--text)}
-.gate-ico{font-size:19px; line-height:1.3}
+.gate p{margin:0; font-size:14px; color:var(--ink)}
 
-/* ---------- sections ---------- */
-section{margin:44px 0}
-h3{
-  font-size:13px; letter-spacing:.12em; text-transform:uppercase;
-  color:var(--text-3); font-weight:600; margin:0 0 16px;
-  padding-bottom:10px; border-bottom:1px solid var(--border)
-}
+section{margin-bottom:38px}
+h3.rule{font-family:var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); font-weight:500; padding-bottom:9px; border-bottom:1px solid var(--rule); margin-bottom:16px}
 
-/* ---------- strengths ---------- */
-.strength{display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border)}
-.strength:last-child{border-bottom:0}
-.strength-ico{color:var(--green); flex:0 0 auto; font-weight:700}
-.strength p{margin:0; font-size:15px}
-.strength .ev{display:block; font-family:var(--mono); font-size:12px; color:var(--text-3); margin-top:3px}
+.good{display:flex; gap:11px; padding:11px 0; border-bottom:1px solid var(--rule)}
+.good:last-child{border-bottom:0}
+.good-mark{color:var(--ok); font-weight:700; flex:0 0 auto}
+.good p{margin:0; font-size:15px}
+.good .where{display:block; font-family:var(--mono); font-size:12px; color:var(--ink-3); margin-top:3px}
 
-/* ---------- layer grid ---------- */
-.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(188px,1fr)); gap:10px}
-.layer{
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:10px; padding:13px 15px; border-left:3px solid var(--border)
-}
-.layer.g{border-left-color:var(--green)}
-.layer.a{border-left-color:var(--amber)}
-.layer.r{border-left-color:var(--red)}
-.layer.na{opacity:.5}
-.layer-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
-.layer-name{font-size:13.5px; font-weight:600; letter-spacing:-.01em}
-.layer-score{font-family:var(--mono); font-size:12.5px; font-weight:700; white-space:nowrap}
-.layer.g .layer-score{color:var(--green)}
-.layer.a .layer-score{color:var(--amber)}
-.layer.r .layer-score{color:var(--red)}
-.layer.na .layer-score{color:var(--text-3)}
-.layer-num{font-size:11px; color:var(--text-3); font-family:var(--mono)}
-.gate-tag{
-  display:inline-block; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
-  background:var(--surface-2); color:var(--text-3); padding:1px 5px;
-  border-radius:4px; margin-left:5px; vertical-align:1px; font-weight:600
-}
+.layers{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:9px}
+.lyr{background:var(--card); border:1px solid var(--rule); border-radius:8px; padding:12px 14px; border-left:3px solid var(--rule); min-width:0}
+.lyr.ok{border-left-color:var(--ok)}
+.lyr.wn{border-left-color:var(--warn)}
+.lyr.bd{border-left-color:var(--bad)}
+.lyr.na{opacity:.48}
+.lyr-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.lyr-name{font-size:13.5px; font-weight:500; letter-spacing:-.005em; min-width:0}
+.lyr-score{font-family:var(--mono); font-size:12.5px; font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums}
+.lyr.ok .lyr-score{color:var(--ok)}
+.lyr.wn .lyr-score{color:var(--warn)}
+.lyr.bd .lyr-score{color:var(--bad)}
+.lyr.na .lyr-score{color:var(--ink-3)}
+.lyr-n{font-family:var(--mono); font-size:10.5px; color:var(--ink-3)}
+.g-tag{display:inline-block; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; background:var(--sunk); color:var(--ink-3); padding:1px 5px; border-radius:3px; margin-left:5px; vertical-align:1.5px}
 
-/* ---------- findings ---------- */
-.finding{
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--radius); padding:22px; margin-bottom:14px
-}
-.finding.crit{border-left:3px solid var(--red)}
-.finding.warn{border-left:3px solid var(--amber)}
-.f-head{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap}
-.f-title{font-size:17px; font-weight:650; margin:0; letter-spacing:-.01em}
-.f-meta{display:flex; gap:6px; flex-wrap:wrap}
-.pill{
-  font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600;
-  background:var(--surface-2); color:var(--text-2); white-space:nowrap
-}
-.pill.red{background:var(--red-bg); color:var(--red)}
-.pill.amber{background:var(--amber-bg); color:var(--amber)}
-.pill.green{background:var(--green-bg); color:var(--green)}
-.f-row{margin-bottom:12px}
-.f-row:last-child{margin-bottom:0}
-.f-lbl{
-  font-size:11px; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--text-3); font-weight:600; margin-bottom:3px
-}
-.f-row p{margin:0; font-size:14.5px; color:var(--text)}
-.f-row.why p{color:var(--text-2)}
-code{font-family:var(--mono); font-size:12.5px; background:var(--surface-2); padding:2px 5px; border-radius:4px}
-pre{
-  background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
-  padding:13px 15px; overflow-x:auto; margin:8px 0 0; font-size:12.5px; line-height:1.55
-}
-pre code{background:none; padding:0; font-size:inherit}
+.find{background:var(--card); border:1px solid var(--rule); border-radius:10px; padding:20px 22px; margin-bottom:12px; border-left:3px solid var(--rule)}
+.find.crit{border-left-color:var(--bad)}
+.find.high{border-left-color:var(--warn)}
+.find-top{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; margin-bottom:15px}
+.find-top h4{font-size:17px; font-weight:600; letter-spacing:-.015em; min-width:0; flex:1 1 220px}
+.tags{display:flex; gap:6px; flex-wrap:wrap}
+.tag{font-family:var(--mono); font-size:10.5px; padding:3px 8px; border-radius:20px; background:var(--sunk); color:var(--ink-2); white-space:nowrap; letter-spacing:.02em}
+.tag.bad{background:var(--bad-bg); color:var(--bad)}
+.tag.warn{background:var(--warn-bg); color:var(--warn)}
+.row{margin-bottom:11px}
+.row:last-child{margin-bottom:0}
+.lbl{font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); margin-bottom:3px}
+.row p{margin:0; font-size:14.5px}
+.row.why p{color:var(--ink-2)}
+code{background:var(--sunk); padding:2px 5px; border-radius:4px; font-size:12.5px}
+pre{background:var(--sunk); border:1px solid var(--rule); border-radius:7px; padding:12px 14px; margin:8px 0 0; overflow-x:auto; font-size:12.5px; line-height:1.55}
+pre code{background:none; padding:0}
 
-/* ---------- ordered list ---------- */
-ol.priority{counter-reset:p; list-style:none; padding:0; margin:0}
-ol.priority li{
-  counter-increment:p; position:relative; padding:11px 0 11px 42px;
-  border-bottom:1px solid var(--border); font-size:15px
-}
-ol.priority li:last-child{border-bottom:0}
-ol.priority li::before{
-  content:counter(p); position:absolute; left:0; top:11px;
-  width:25px; height:25px; border-radius:50%; background:var(--surface-2);
-  color:var(--text-2); font-size:12px; font-weight:700;
-  display:flex; align-items:center; justify-content:center; font-family:var(--mono)
-}
-ol.priority li .note{display:block; color:var(--text-3); font-size:13px; margin-top:2px}
+.win{display:flex; gap:12px; align-items:flex-start; background:var(--ok-bg); border:1px solid color-mix(in srgb,var(--ok) 26%,transparent); border-radius:9px; padding:14px 16px; margin-bottom:9px}
+.win-mark{color:var(--ok); font-weight:700; flex:0 0 auto; font-family:var(--mono); font-size:13px}
+.win p{margin:0; font-size:14.5px; min-width:0}
+.win b{display:block; font-weight:600; margin-bottom:2px}
+.win span{color:var(--ink-2); font-size:13.5px}
 
-/* ---------- quick wins ---------- */
-.win{
-  display:flex; gap:13px; align-items:flex-start; background:var(--green-bg);
-  border:1px solid color-mix(in srgb, var(--green) 28%, transparent);
-  border-radius:10px; padding:15px 17px; margin-bottom:10px
-}
-.win-ico{color:var(--green); font-weight:700; flex:0 0 auto}
-.win p{margin:0; font-size:14.5px}
-.win .t{font-weight:650; display:block; margin-bottom:2px}
-.win .m{color:var(--text-2); font-size:13.5px}
+ol.order{counter-reset:o; list-style:none; margin:0; padding:0}
+ol.order li{counter-increment:o; position:relative; padding:11px 0 11px 40px; border-bottom:1px solid var(--rule); font-size:15px}
+ol.order li:last-child{border-bottom:0}
+ol.order li::before{content:counter(o); position:absolute; left:0; top:12px; width:24px; height:24px; border-radius:50%; background:var(--sunk); color:var(--ink-2); font-family:var(--mono); font-size:11.5px; font-weight:600; display:flex; align-items:center; justify-content:center}
+ol.order .sub{display:block; color:var(--ink-3); font-size:13px; margin-top:2px}
 
-/* ---------- footer ---------- */
-footer{
-  margin-top:56px; padding-top:22px; border-top:1px solid var(--border);
-  color:var(--text-3); font-size:12.5px
-}
-footer p{margin:0 0 5px}
-
-@media print{
-  body{background:#fff}
-  .wrap{max-width:none; padding:0}
-  .finding,.layer,.verdict{break-inside:avoid}
-  section{break-inside:avoid-page}
-}
+footer{border-top:1px solid var(--rule); padding-top:20px; color:var(--ink-3); font-size:12.5px}
+footer p{margin:0 0 6px}
 </style>
-</head>
-<body>
-<div class="wrap">
 
-  <p class="eyebrow">Production Readiness Report</p>
+<div class="sheet">
+
+  <p class="eyebrow">Production readiness</p>
   <h1>{{PROJECT_NAME}}</h1>
-  <p class="sub">{{STACK_SUMMARY}} · Audited {{DATE}} · <code>{{PROJECT_PATH}}</code></p>
+  <p class="meta">{{STACK_SUMMARY}}<span class="dot">·</span>{{DATE}}<span class="dot">·</span><code>{{PROJECT_PATH}}</code></p>
 
-  <!-- ===== VERDICT ===== -->
-  <div class="verdict">
-    <div class="ring">
-      <svg width="132" height="132" viewBox="0 0 132 132">
-        <circle cx="66" cy="66" r="58" fill="none" stroke="var(--border)" stroke-width="11"/>
-        <!-- stroke-dasharray: {{PCT}}% of 364.4 -->
-        <circle cx="66" cy="66" r="58" fill="none" stroke="{{RING_COLOR}}" stroke-width="11"
+  <div class="summary">
+    <div class="dial">
+      <svg width="136" height="136" viewBox="0 0 136 136" aria-hidden="true">
+        <circle cx="68" cy="68" r="58" fill="none" stroke="var(--sunk)" stroke-width="11"/>
+        <!-- RING_FILLED = round(364.4 * PCT / 100). RING_COLOR: var(--ok) >=80, var(--warn) 60-79, var(--bad) <60 -->
+        <circle cx="68" cy="68" r="58" fill="none" stroke="{{RING_COLOR}}" stroke-width="11"
                 stroke-linecap="round" stroke-dasharray="{{RING_FILLED}} 364.4"/>
       </svg>
-      <div class="ring-label">
-        <span class="ring-pct">{{PCT}}%</span>
-        <span class="ring-cap">Ready</span>
+      <div class="dial-txt">
+        <span class="dial-pct">{{PCT}}%</span>
+        <span class="dial-cap">ready</span>
       </div>
     </div>
-    <div class="verdict-body">
+    <div class="summary-body">
       <h2>{{VERDICT_HEADLINE}}</h2>
       <p>{{VERDICT_DETAIL}}</p>
-      <p class="scorenote">{{EARNED}} of {{APPLICABLE}} points across {{N_SCORED}} applicable layers · {{N_NA}} marked not applicable{{TIER_NOTE}}</p>
+      <p class="arith">{{EARNED}} of {{APPLICABLE}} points · {{N_SCORED}} layers scored · {{N_NA}} not applicable{{TIER_NOTE}}</p>
     </div>
   </div>
 
-  <!-- ===== GATE BANNER (keep .fail or .pass, delete the other) ===== -->
+  <!-- Gate banner: keep .fail or .pass, delete the other -->
   <div class="gate fail">
-    <span class="gate-ico">⛔</span>
-    <span><strong>Blocked: not production ready</strong>{{GATE_DETAIL}}</span>
+    <span class="gate-mark">■</span>
+    <div>
+      <strong>Blocked by gate layers</strong>
+      <p>{{GATE_DETAIL}}</p>
+    </div>
   </div>
 
-  <!-- ===== STRENGTHS ===== -->
   <section>
-    <h3>What this project does well</h3>
-    <!-- repeat .strength -->
-    <div class="strength">
-      <span class="strength-ico">✓</span>
-      <p>{{STRENGTH_TEXT}}<span class="ev">{{STRENGTH_EVIDENCE}}</span></p>
-    </div>
+    <h3 class="rule">What this project does well</h3>
+    <!-- repeat .good, 3-5 times -->
+    <div class="good"><span class="good-mark">✓</span><p>{{STRENGTH_TEXT}}<span class="where">{{STRENGTH_EVIDENCE}}</span></p></div>
   </section>
 
-  <!-- ===== LAYER GRID ===== -->
   <section>
-    <h3>All layers at a glance</h3>
-    <div class="grid">
-      <!-- repeat .layer — class: g (7-10) / a (4-6) / r (1-3) / na -->
-      <div class="layer g">
-        <div class="layer-top">
-          <span class="layer-name">{{LAYER_NAME}}<span class="gate-tag">Gate</span></span>
-          <span class="layer-score">{{LAYER_SCORE}}</span>
+    <h3 class="rule">All layers at a glance</h3>
+    <div class="layers">
+      <!-- repeat .lyr for all 23 layers in order. class: ok 7-10 / wn 4-6 / bd 1-3 / na -->
+      <!-- keep <span class="g-tag">gate</span> only on gate layers (4, 8, 12, 13, and 18/20 when they apply) -->
+      <div class="lyr ok">
+        <div class="lyr-top">
+          <span class="lyr-name">{{LAYER_NAME}}<span class="g-tag">gate</span></span>
+          <span class="lyr-score">{{LAYER_SCORE}}</span>
         </div>
-        <span class="layer-num">Layer {{LAYER_NUM}}</span>
+        <span class="lyr-n">Layer {{LAYER_NUM}}{{LAYER_NA_REASON}}</span>
       </div>
     </div>
   </section>
 
-  <!-- ===== FINDINGS ===== -->
   <section>
-    <h3>What needs fixing</h3>
-    <!-- repeat .finding — class crit (gate/red) or warn (amber) -->
-    <article class="finding crit">
-      <div class="f-head">
-        <h4 class="f-title">{{FINDING_TITLE}}</h4>
-        <div class="f-meta">
-          <span class="pill red">{{SEVERITY}}</span>
-          <span class="pill">Layer {{FINDING_LAYER}}</span>
-          <span class="pill">{{EFFORT}}</span>
+    <h3 class="rule">What needs fixing</h3>
+    <!-- repeat article.find, worst first. class: crit (gate/red) or high (amber) -->
+    <article class="find crit">
+      <div class="find-top">
+        <h4>{{FINDING_TITLE}}</h4>
+        <div class="tags">
+          <span class="tag bad">{{SEVERITY}}</span>
+          <span class="tag">Layer {{FINDING_LAYER}}</span>
+          <span class="tag">{{EFFORT}}</span>
         </div>
       </div>
-      <div class="f-row"><div class="f-lbl">What</div><p>{{FINDING_WHAT}}</p></div>
-      <div class="f-row why"><div class="f-lbl">Why it matters</div><p>{{FINDING_WHY}}</p></div>
-      <div class="f-row">
-        <div class="f-lbl">Fix</div>
+      <div class="row"><div class="lbl">What</div><p>{{FINDING_WHAT}}</p></div>
+      <div class="row why"><div class="lbl">Why it matters</div><p>{{FINDING_WHY}}</p></div>
+      <div class="row">
+        <div class="lbl">Fix</div>
         <p>{{FINDING_FIX}}</p>
+        <!-- delete the pre block when a snippet would not genuinely help -->
         <pre><code>{{FINDING_SNIPPET}}</code></pre>
       </div>
-      <div class="f-row"><div class="f-lbl">Found in</div><p><code>{{FINDING_EVIDENCE}}</code></p></div>
+      <div class="row"><div class="lbl">Found in</div><p><code>{{FINDING_EVIDENCE}}</code></p></div>
     </article>
   </section>
 
-  <!-- ===== QUICK WINS ===== -->
   <section>
-    <h3>Start here — quick wins</h3>
-    <div class="win">
-      <span class="win-ico">⚡</span>
-      <p><span class="t">{{WIN_TITLE}}</span><span class="m">{{WIN_DETAIL}}</span></p>
-    </div>
+    <h3 class="rule">Start here — quick wins</h3>
+    <!-- repeat .win, 2-3 times. win-mark is the time estimate, e.g. 20m -->
+    <div class="win"><span class="win-mark">{{WIN_TIME}}</span><p><b>{{WIN_TITLE}}</b><span>{{WIN_DETAIL}}</span></p></div>
   </section>
 
-  <!-- ===== PRIORITY ORDER ===== -->
   <section>
-    <h3>Recommended order</h3>
-    <ol class="priority">
-      <li>{{PRIORITY_ITEM}}<span class="note">{{PRIORITY_NOTE}}</span></li>
+    <h3 class="rule">Recommended order</h3>
+    <ol class="order">
+      <!-- repeat li -->
+      <li>{{PRIORITY_ITEM}}<span class="sub">{{PRIORITY_NOTE}}</span></li>
     </ol>
   </section>
 
   <footer>
-    <p>Generated by the Production App Playbook audit · {{DATE}}</p>
-    <p>Scored across 23 layers. Percentages are comparable to this project's own previous audits, not to other projects — a different set of non-applicable layers means a different scale.</p>
+    <p>Production App Playbook audit · {{DATE}}</p>
+    <p>Scored across 23 layers, {{N_SCORED}} applicable. Percentages compare against this project's own earlier audits, not against other projects — a different set of non-applicable layers means a different scale.</p>
     <p>{{SCOPE_NOTE}}</p>
   </footer>
 
 </div>
-</body>
-</html>
