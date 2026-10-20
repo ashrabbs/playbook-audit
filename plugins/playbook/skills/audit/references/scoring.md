@@ -97,7 +97,8 @@ exists, record:
 - Previous score and date
 - Delta (+/- points)
 - Any layer that went **down** — a regression is more important than the
-  headline number
+  headline number. A score that changed while the code at the cited lines did
+  not is drift, not a regression; say so
 - Each earlier problem: fixed ✅ / not fixed ❌ / partly fixed ⚠️, with `file:line`
 
 If the earlier report used a different set of layers (an older version of

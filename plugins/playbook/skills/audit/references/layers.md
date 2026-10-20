@@ -312,7 +312,7 @@ Target **WCAG 2.2 AA**. Legal exposure: ADA (US), European Accessibility Act
 - Meaningful `alt` text; `alt=""` on decorative images
 - `prefers-reduced-motion` respected
 - **Custom dropdowns, modals and date pickers built from `<div>`s** — the most common serious offender in AI-generated frontends
-- Run `npx @axe-core/cli <url>` or Lighthouse — a floor, not proof. Automation catches roughly a third of failures
+- Score this layer by reading the markup. **Do not run a scanner** — it needs a running site, there is usually no URL, and running things is not what this audit does. Instead, put `npx @axe-core/cli <url>` or Lighthouse into the fix prompt as a step for the user, and say there what it is worth: a floor, not proof, catching roughly a third of WCAG failures
 
 ## Layer 22 — Launch Presentation and Share Assets
 
