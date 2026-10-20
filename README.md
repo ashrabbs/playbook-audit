@@ -62,6 +62,23 @@ You can also just ask, in your own words:
 
 ---
 
+### Optional: connect Better Stack
+
+The audit asks "if your app went down right now, how would you find out?" An
+uptime monitor lives outside your code, so the audit can only check it if
+Claude can see it. If you use [Better Stack](https://betterstack.com), connect
+it before running the audit:
+
+- **On the web:** add a custom connector at
+  https://claude.ai/customize/connectors with the URL
+  `https://mcp.betterstack.com`, then start a new session.
+- **In a terminal:**
+  `claude mcp add betterstack --transport http https://mcp.betterstack.com`
+
+The audit then reads your monitors, heartbeats and recent incidents. It only
+reads; it never changes them. Without it, monitoring is scored from the code
+alone, and if none is found the report tells you how to set Better Stack up.
+
 ## What you get
 
 A report with:

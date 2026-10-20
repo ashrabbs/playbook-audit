@@ -170,8 +170,10 @@ proven otherwise, and check the full git history for secrets.
 - Structured logs — JSON objects with fields, not sentences
 - Correlation ID following a request across services
 - **Business-metric monitoring**, not just server health. Signups per hour, payments per hour. A 40% revenue drop with green dashboards is a silent failure
-- Uptime monitoring with a `/health` endpoint
+- Uptime monitoring with a `/health` endpoint that checks the database, not one that always says "ok"
+- A heartbeat on every scheduled job, so a job that silently stops is noticed
 - **The discovery question:** "if this went down right now, how would you find out?" If the answer is "a customer would email me", this layer is 🔴 regardless of what is installed
+- Monitors live outside the repo. If Better Stack is connected, the audit checks them live; what to recommend when they're missing, and how to connect it: `monitoring.md`
 
 ## Layer 13 — Availability and Recovery 🚪
 
