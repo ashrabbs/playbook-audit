@@ -68,8 +68,11 @@ It prints one row per candidate: `path <TAB> markers <TAB> days-since-modified`.
   be somewhere unusual, or on another drive. Accept a path and re-run the finder
   with it as the argument.
 
-Once you have the directory, confirm it is the right one before auditing. A
-wasted audit of the wrong project is worse than one extra question.
+**When to ask.** With one row, say what you found and start — do not make them
+choose from a list of one. Ask only when there are several rows, when there are
+none, or when the user never named a project and the single row might not be
+the one they meant. A wasted audit of the wrong project costs more than one
+question, but so does a question with one possible answer.
 
 ## Phase 1 — Fingerprint the stack
 
@@ -89,6 +92,21 @@ CLI tool has no accessibility or share-assets layer. Scoring an absent layer as
 Tell the user what you detected, in one short paragraph, before you start
 scoring. If the fingerprint is wrong they will say so immediately, and you will
 have saved the whole audit.
+
+**Send it on its own and wait for a reply before starting the review tasks.**
+A fingerprint that goes out in the same message that launches the reviewers
+cannot be corrected in time — by the time the user reads it, the audit is
+already running on the wrong assumptions.
+
+Two exceptions. If the user has already told you the stack, or has said to go
+ahead without checking in, state the fingerprint and continue in the same
+message. If you are running unattended, with nobody to answer, do the same and
+write the line *"Fingerprint not confirmed with the user"* into `{{SCOPE_NOTE}}`
+so the report says which assumptions went unchecked.
+
+Name technologies the user would recognise — the framework, the database, the
+host. Leave out library and package names they would have to look up; the
+paragraph is there to be corrected, not to prove you read the lockfile.
 
 ### Look for an earlier audit
 
