@@ -40,7 +40,9 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 | `{{VERDICT_HEADLINE}}` | "Production ready" / "Close — fix critical gaps first" / "Not production ready" / "Demo-grade only". **If a gate failed this says "Not production ready" regardless of the band** |
 | `{{VERDICT_DETAIL}}` | One or two sentences, leading with the single most important thing |
 | `{{EARNED}}` `{{APPLICABLE}}` `{{N_SCORED}}` `{{N_NA}}` | The scoring arithmetic |
-| `{{N_BAD}}` `{{N_WARN}}` `{{N_OK}}` | **Counts** of layers scoring 1–3, 4–6, 7–10. Must sum with `N_NA` to 23 |
+| `{{N_BAD}}` `{{N_WARN}}` `{{N_OK}}` | **Counts** of layers scoring 1–3, 4–6, 7–10. Must sum with `N_NA` to 23. These are bands, not severities — the key reads "red / amber / green", because "critical" already counts findings in the findings heading |
+| `{{LAYER_WHY}}` | One sentence saying why that layer got that score |
+| `{{LAYER_EVIDENCE}}` | The `file:line` behind it. **Required on every scored layer** — this is where the "every score cites a file:line" rule is actually kept |
 | `{{TIER_NOTE}}` | e.g. ` · scored as a live app taking payments` — or delete |
 | `{{GATE_DETAIL}}` | **Gate failed** (keep `.gate.fail`): which gates failed and why, one sentence, with `file:line`. **All gates passed** (keep `.gate.pass`): name the lowest-scoring gate, e.g. "Every gate layer scores 4 or more. Security is the closest call at 4/10." |
 | `{{SEVERITY_COUNTS}}` | e.g. `3 critical · 2 high` |
@@ -77,6 +79,16 @@ the name on gate layers only.
 
 *N/A:* the `.lyr.na` variant, with `{{NA_REASON}}` giving the reason in two or
 three words (`serverless`, `no AI features`, `desk-only`).
+
+**Evidence rows** — the collapsible block under the grid, one row per layer in
+numeric order. The grid itself has no room for a citation, so this is where the
+scoring rule *"every score cites a real `file:line`"* is actually honoured. In
+the test run 7 of 22 scores had no citation anywhere in the published report.
+
+Every **scored** layer needs at least one `file:line`. For an N/A layer the
+reason stands on its own and `{{LAYER_EVIDENCE}}` can be dropped. A layer you
+could not assess says so here in `{{LAYER_WHY}}` rather than carrying an
+invented citation.
 
 **Findings** — one per real problem, worst first. `crit` for gate failures and
 🔴 layers, `high` for 🟡.

@@ -186,16 +186,16 @@ footer p{margin:0 0 6px}
 
   <!-- Distribution: flex values are the COUNTS of layers in each band. Delete any band with a count of 0. -->
   <div class="dist">
-    <div class="dist-bar" role="img" aria-label="{{N_BAD}} critical, {{N_WARN}} needs work, {{N_OK}} solid, {{N_NA}} not applicable">
+    <div class="dist-bar" role="img" aria-label="{{N_BAD}} red (1–3), {{N_WARN}} amber (4–6), {{N_OK}} green (7–10), {{N_NA}} not applicable">
       <i class="s-bad" style="flex:{{N_BAD}}"></i>
       <i class="s-warn" style="flex:{{N_WARN}}"></i>
       <i class="s-ok" style="flex:{{N_OK}}"></i>
       <i class="s-na" style="flex:{{N_NA}}"></i>
     </div>
     <div class="key">
-      <div><span class="swatch" style="background:var(--bad)"></span><b>{{N_BAD}}</b> critical</div>
-      <div><span class="swatch" style="background:var(--warn)"></span><b>{{N_WARN}}</b> needs work</div>
-      <div><span class="swatch" style="background:var(--ok)"></span><b>{{N_OK}}</b> solid</div>
+      <div><span class="swatch" style="background:var(--bad)"></span><b>{{N_BAD}}</b> red (1–3)</div>
+      <div><span class="swatch" style="background:var(--warn)"></span><b>{{N_WARN}}</b> amber (4–6)</div>
+      <div><span class="swatch" style="background:var(--ok)"></span><b>{{N_OK}}</b> green (7–10)</div>
       <div><span class="swatch" style="background:var(--na)"></span><b>{{N_NA}}</b> not applicable</div>
     </div>
   </div>
@@ -242,6 +242,13 @@ footer p{margin:0 0 6px}
         <span class="lyr-score">N/A</span>
       </div>
     </div>
+    <details class="prompt" style="margin-top:12px">
+      <summary><span class="chev">▸</span><b>Evidence for each score</b></summary>
+      <div class="prompt-body">
+        <!-- repeat once per layer, in order. Every scored layer needs at least one file:line. -->
+        <div class="row"><div class="lbl">{{LAYER_NUM}} · {{LAYER_NAME}} · {{LAYER_SCORE}}</div><p>{{LAYER_WHY}} <code>{{LAYER_EVIDENCE}}</code></p></div>
+      </div>
+    </details>
   </section>
 
   <section>
