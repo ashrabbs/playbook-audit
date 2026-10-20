@@ -200,11 +200,18 @@ footer p{margin:0 0 6px}
     </div>
   </div>
 
-  <!-- Gate banner: keep .fail or .pass, delete the other -->
+  <!-- Gate banner: keep ONE of these two, delete the other -->
   <div class="gate fail">
     <span class="gate-mark">■</span>
     <div>
       <strong>Blocked by gate layers</strong>
+      <p>{{GATE_DETAIL}}</p>
+    </div>
+  </div>
+  <div class="gate pass">
+    <span class="gate-mark">✓</span>
+    <div>
+      <strong>All gate layers pass</strong>
       <p>{{GATE_DETAIL}}</p>
     </div>
   </div>
@@ -269,6 +276,12 @@ footer p{margin:0 0 6px}
     <h3 class="rule">Start here — quick wins</h3>
     <!-- repeat .win, 2-3 times. win-mark is the time estimate, e.g. 20m -->
     <div class="win"><span class="win-mark">{{WIN_TIME}}</span><p><b>{{WIN_TITLE}}</b><span>{{WIN_DETAIL}}</span></p></div>
+  </section>
+
+  <!-- Only when an earlier audit was found. Otherwise delete this whole section. -->
+  <section>
+    <h3 class="rule">Since the last audit <em>{{PREV_DATE}} · {{PREV_PCT}}%</em></h3>
+    <div class="good"><span class="good-mark">↻</span><p>{{PREV_SUMMARY}}<span class="where">{{PREV_PATH}}</span></p></div>
   </section>
 
   <section>

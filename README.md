@@ -8,23 +8,51 @@ You don't need to know your tech stack, and you don't need to type a file path.
 
 ---
 
-## Install
+## Run it on the web (claude.ai/code)
 
-Two commands, once. In a Claude Code session:
+No install needed. Plugins can't be installed in a claude.ai/code session, so
+the audit is started with one pasted message instead.
+
+1. Open **claude.ai/code** and pick your GitHub repository. You need a Pro,
+   Max or Team plan. For a private repository, install the Claude GitHub app
+   when it asks.
+2. Paste this as your first message:
+
+```
+Run a production-readiness audit of this repository.
+First clone https://github.com/ashrabbs/playbook-audit into /tmp/playbook (outside this project).
+Then follow /tmp/playbook/plugins/playbook/skills/audit/SKILL.md exactly, step by step.
+Wherever it says ${CLAUDE_SKILL_DIR}, use /tmp/playbook/plugins/playbook/skills/audit.
+Do not change any file in this repository.
+```
+
+## Or install it in Claude Code on your computer
+
+Two commands, once, in Claude Code in a terminal:
 
 ```
 /plugin marketplace add ashrabbs/playbook-audit
 /plugin install playbook@playbook-audit
 ```
 
-## Use it
+Then run:
 
 ```
 /playbook:audit
 ```
 
-That's it. It will find your project, tell you what it thinks it is, and produce
+Either way, it finds your project, tells you what it thinks it is, and produces
 a report with a link you can open and share.
+
+### How long it takes
+
+The audit measures your project first. A small one is reviewed in a single
+pass. Anything bigger is split into **4 smaller reviews** that run side by side,
+so every one of the 23 layers gets proper attention. On a very large project
+(over 50,000 lines) it offers a **deep review** in 8 smaller parts. That finds
+more but uses more of your plan's usage, so it suits Pro plans and above with
+room to spare. You can always ask for the deep review yourself: "do a deep
+audit".
 
 You can also just ask, in your own words:
 
@@ -78,7 +106,7 @@ looks healthy. A good average shouldn't hide a problem that loses user data.
 **It will:**
 - Read your code
 - Score it and explain every score with a specific file and line
-- Write a report to a file outside your project
+- Write a report (and its working notes) to files outside your project
 
 **It will not:**
 - Change a single file in your project
@@ -100,6 +128,10 @@ It's a read-only review. Nothing it does can break your project.
 ---
 
 ## Troubleshooting
+
+**"/plugin isn't available" or "Unknown command"** — you're probably on
+claude.ai/code, where plugins can't be installed. Use the pasted message under
+[Run it on the web](#run-it-on-the-web-claudeaicode) instead.
 
 **"Marketplace not found"** — check the spelling: `ashrabbs/playbook-audit`.
 You need `git` installed, which you already have if you use Claude Code.

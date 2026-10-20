@@ -42,9 +42,12 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 | `{{EARNED}}` `{{APPLICABLE}}` `{{N_SCORED}}` `{{N_NA}}` | The scoring arithmetic |
 | `{{N_BAD}}` `{{N_WARN}}` `{{N_OK}}` | **Counts** of layers scoring 1–3, 4–6, 7–10. Must sum with `N_NA` to 23 |
 | `{{TIER_NOTE}}` | e.g. ` · scored as a live app taking payments` — or delete |
-| `{{GATE_DETAIL}}` | Which gates failed and why, one sentence |
+| `{{GATE_DETAIL}}` | **Gate failed** (keep `.gate.fail`): which gates failed and why, one sentence, with `file:line`. **All gates passed** (keep `.gate.pass`): name the lowest-scoring gate, e.g. "Every gate layer scores 4 or more. Security is the closest call at 4/10." |
 | `{{SEVERITY_COUNTS}}` | e.g. `3 critical · 2 high` |
-| `{{SCOPE_NOTE}}` | Any limit on what you read — or delete the line |
+| `{{SCOPE_NOTE}}` | Any limit on what you read, and how the review was split (e.g. "Reviewed in 4 parallel tasks; gate findings re-checked by hand") — or delete the line |
+| `{{PREV_DATE}}` `{{PREV_PCT}}` | The earlier report's date and percentage |
+| `{{PREV_SUMMARY}}` | Delta, how many earlier problems are fixed / partly / not fixed, and any layer that went **down**. If the earlier report used different layers, say the percentages are not directly comparable |
+| `{{PREV_PATH}}` | Where the earlier report lives in the project |
 
 ### The dial
 
@@ -86,6 +89,9 @@ three words (`serverless`, `no AI features`, `desk-only`).
 
 **Quick wins** — 2 or 3, under an hour each. `{{WIN_TIME}}` is the marker, e.g.
 `20m`. For a non-developer this is the most valuable section.
+
+**Since the last audit** — only when Phase 1 found an earlier report. If
+there is none, delete the whole section.
 
 **Priority order** — from `scoring.md`, reduced to what actually applies.
 

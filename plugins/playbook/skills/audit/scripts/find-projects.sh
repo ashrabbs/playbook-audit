@@ -72,6 +72,8 @@ else
     "$HOME/projects" "$HOME/Projects" "$HOME/code" "$HOME/Code"
     "$HOME/dev" "$HOME/Dev" "$HOME/src" "$HOME/repos" "$HOME/git"
     "$HOME/Documents" "$HOME/Desktop" "$HOME/Sites" "$HOME/workspace"
+    # Cloud sessions (claude.ai/code) clone the repo here, outside $HOME.
+    /home/user /workspace /workspaces
   )
 fi
 
@@ -90,4 +92,10 @@ for root in "${SEARCH_ROOTS[@]}"; do
     find "$root" -maxdepth 3 \
       \( \( "${prune_expr[@]}" \) -prune \) -o -type d -print 2>/dev/null
   )
-done | sort -u -t$'\t' -k1,1
+done | sort -u -t$'\t' -k1,1 \
+  | awk -F'\t' '
+      # Drop folders inside a project already listed (a monorepo'"'"'s web/ or
+      # worker/), so the user sees one row per project.
+      { for (i = 1; i <= n; i++) if (index($1, kept[i] "/") == 1) next
+        kept[++n] = $1; print }'
+exit 0
