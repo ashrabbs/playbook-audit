@@ -131,7 +131,8 @@ project, using the conditions in scoring.md, and why.
 <If a previous report exists:> A previous audit is at <path>. For each issue it
 raised in your layers, say whether it is fixed, not fixed or partly fixed,
 with file:line. <If it used different layers:> Its layers map to ours as
-<old → new>; check each issue under the layer it now belongs to.
+<old → new, from the mapping you worked out when you read that report in
+Phase 1>; check each issue under the layer it now belongs to.
 
 Return exactly this, for each layer:
 
