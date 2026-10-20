@@ -94,7 +94,12 @@ Write the check down. In your notes file, one row per item above:
 `claim | file:line | what the line actually shows | ✅ / ❌`. Open every line
 yourself; a reviewer's line number is a pointer, not proof. Do not start the
 report until every row is filled. A Critical finding with no ✅ row does not
-go in the report. Then merge the results and continue with `scoring.md`.
+go in the report.
+
+Then merge the results. Each task returns an **Outside my layers** list: fold
+every line into the layer it belongs to, and score it there once. Do not score
+the same problem in two layers — in the test run source maps were reported
+three times. Continue with `scoring.md`.
 
 ## 5. The task prompt
 
@@ -107,7 +112,11 @@ You are one reviewer in a READ-ONLY production-readiness audit of the project at
 
 Rules — not negotiable:
 - Do not create, edit or delete any file in the project. Do not run the
-  project's code, tests, installs or scripts. Read-only git commands are fine.
+  project's code, tests, installs or scripts. Read-only git commands are fine,
+  and so is `npm audit --package-lock-only` (or the stack's equivalent). Make
+  no other network calls.
+- Stay inside your layers. If you notice a problem in another layer, list it
+  in one line under "Outside my layers" and do not investigate it.
 - Never print a secret value, not even partly. Write only "a credential appears
   at file:line".
 - Every score cites a real file:line you actually read. If you can't find
@@ -116,9 +125,13 @@ Rules — not negotiable:
 Your layers: <numbers and names>.
 Read their checks in <skill-dir>/references/layers.md and the scale in
 <skill-dir>/references/scoring.md (1-10; 7-10 green, 4-6 amber, 1-3 red).
+Context: <tier from discovery.md §6, who uses it and where, payments live or not>.
+<If your layers include 18 or 20:> Say whether each is a gate for this
+project, using the conditions in scoring.md, and why.
 <If a previous report exists:> A previous audit is at <path>. For each issue it
 raised in your layers, say whether it is fixed, not fixed or partly fixed,
-with file:line.
+with file:line. <If it used different layers:> Its layers map to ours as
+<old → new>; check each issue under the layer it now belongs to.
 
 Return exactly this, for each layer:
 
@@ -130,6 +143,7 @@ Findings:
   Fix: <specific change and file> | Effort: Low/Medium/High |
   Severity: Critical/High/Medium/Low
 Previous items: <fixed ✅ / not fixed ❌ / partly ⚠️ — file:line, or "none">
+Outside my layers: <one line per problem seen elsewhere, with file:line, or "none">
 
 Then: Strengths — 1 to 3 things done well, each with file:line.
 Be honest. Don't inflate scores and don't invent findings. Under 1,000 words.
