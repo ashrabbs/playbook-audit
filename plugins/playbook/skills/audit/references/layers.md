@@ -60,6 +60,9 @@ submit button, 44px minimum touch targets.
 
 ## Layer 4 — Auth and Permissions 🚪
 
+> **Hard cap — scores at most 3:** any endpoint returns another user's data, or
+> passwords are stored unhashed. Apply before any judgement (`scoring.md`).
+
 - Passwords hashed with bcrypt / argon2 / PBKDF2 + per-user salt. **Plain SHA or MD5 is a critical finding**
 - Sessions expire, and expiry is enforced server-side
 - Tokens invalidated on logout and on password change
@@ -116,6 +119,9 @@ An AI sees one database binding and uses it. Nothing in the code looks wrong.
 
 ## Layer 8 — Security 🚪
 
+> **Hard cap — scores at most 3:** a live secret in the repository or its git
+> history. Apply before any judgement (`scoring.md`).
+
 - **Secrets in the codebase?** Grep for `API_KEY =`, `password =`, `secret =`, `token =`, `sk_live`, `-----BEGIN`
 - **Git history clean?** A key ever committed is compromised and must be rotated, even if later removed
 - HTTPS enforced; dependencies reasonably current (`npm audit` / equivalent)
@@ -156,6 +162,9 @@ proven otherwise, and check the full git history for secrets.
 
 ## Layer 12 — Error Tracking and Logs 🚪
 
+> **Hard cap — scores at most 3:** no uptime check or alert outside the app
+> itself. Apply before any judgement (`scoring.md`).
+
 - Error tracking integrated (Sentry or equivalent), **frontend and backend**
 - Alerting on error-rate spikes
 - Structured logs — JSON objects with fields, not sentences
@@ -165,6 +174,10 @@ proven otherwise, and check the full git history for secrets.
 - **The discovery question:** "if this went down right now, how would you find out?" If the answer is "a customer would email me", this layer is 🔴 regardless of what is installed
 
 ## Layer 13 — Availability and Recovery 🚪
+
+> **Hard cap — scores at most 3:** no backup stored apart from the primary
+> database, or no restore ever practised. Apply before any judgement
+> (`scoring.md`).
 
 - Automated backups — and **has a restore actually been tested?** A backup never restored is a hypothesis
 - Backup stored separately from the primary database. Same-server backup is a second copy of the same risk

@@ -59,6 +59,22 @@ then say so.
 **A 🔴 (1–3) in any gate layer means NOT PRODUCTION READY, whatever the
 percentage says.** State this at the top of the report when it happens.
 
+### Hard caps on gate layers
+
+Apply these before any judgement. A gate layer that meets a cap scores at most
+3, however much else is in place:
+
+- **12** — no uptime check or alert outside the app itself (the discovery
+  question's answer is "a user would tell me")
+- **13** — no backup stored apart from the primary database, or no restore
+  ever practised
+- **4** — any endpoint returns another user's data, or passwords are stored
+  unhashed
+- **8** — a live secret in the repository or its git history
+
+A gate layer scored 4 must name the cap it clears and cite the file:line that
+proves it. If you cannot, it is a 3.
+
 A high average must never launder a critical failure. 10/10 caching does not
 offset 3/10 authentication — one of those loses user data.
 
