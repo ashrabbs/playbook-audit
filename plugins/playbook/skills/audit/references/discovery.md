@@ -95,10 +95,14 @@ why** — never score an absent layer 1/10.
 | 16 Legal | No personal data, no payments, internal tool only |
 | 18 Time & Scheduling | Nothing in the app reasons about dates, shifts or schedules |
 | 19 Offline & Sync | Desk-only tool on reliable connectivity, no mobile client |
-| 20 Audit Trail | No sensitive actions and not a record of truth |
+| 20 Audit Trail | **Rarely N/A.** Only when there are no accounts, no admin actions and nothing a user can delete — e.g. a static site. Admin tools, moderation, account deletion or billing make it applicable: score it. Whether it is a *gate* is a separate question (only for a record of truth, see `scoring.md`) |
 | 21 Accessibility | No user interface at all — CLI, library, backend service |
 | 22 Share Assets | No web interface — CLI, library, backend service |
 | 23 Marketing | Internal tool with no public presence and no prospective users |
+
+**Not a gate is not the same as N/A.** A layer that applies but isn't a gate
+for this project (Layer 18 or 20 most often) is still scored and counted; it
+just can't block launch on its own.
 
 **Never N/A:** Layers 1 (if there is any UI), 2, 5, 6, 7, 8, 12, 13, 15, 17.
 Every project has code, deployment, security, observability, documentation and

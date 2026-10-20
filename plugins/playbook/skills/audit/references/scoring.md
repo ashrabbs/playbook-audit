@@ -75,12 +75,19 @@ different projects — two projects with different N/A sets are measured on
 different scales. Say this in the report so nobody treats the number as a
 leaderboard position.
 
-If a previous report exists, record:
+Phase 1 of `SKILL.md` searches the project for an earlier report. If one
+exists, record:
 
 - Previous score and date
 - Delta (+/- points)
 - Any layer that went **down** — a regression is more important than the
   headline number
+- Each earlier problem: fixed ✅ / not fixed ❌ / partly fixed ⚠️, with `file:line`
+
+If the earlier report used a different set of layers (an older version of
+this playbook, or another reviewer's checklist), its percentage is on a
+different scale: say so, skip the delta, and still check its problems one by
+one. That check is what the reader wants to know.
 
 ## Fix verification
 
