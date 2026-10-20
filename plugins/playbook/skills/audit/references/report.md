@@ -41,11 +41,27 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 | `{{VERDICT_DETAIL}}` | One or two sentences, leading with the single most important thing |
 | `{{EARNED}}` `{{APPLICABLE}}` `{{N_SCORED}}` `{{N_NA}}` | The scoring arithmetic |
 | `{{N_BAD}}` `{{N_WARN}}` `{{N_OK}}` | **Counts** of layers scoring 1–3, 4–6, 7–10. Must sum with `N_NA` to 23. These are bands, not severities — the key reads "red / amber / green", because "critical" already counts findings in the findings heading |
+| `{{LAYER_NUM}}` | The layer number, 1–23 |
+| `{{LAYER_NAME}}` | The layer's name as `layers.md` gives it, e.g. "Auth & Permissions" |
+| `{{LAYER_SCORE}}` | The bare number — write `7`, not `7/10`; the grid row appends `/10` itself. In the evidence row for a skipped layer write `N/A` |
+| `{{SCORE_PCT}}` | The meter bar width: `LAYER_SCORE × 10`. A 7 gives `width:70%`. Must agree with the score beside it |
+| `{{NA_REASON}}` | Why a layer is N/A, in two or three words: `serverless`, `no AI features`, `desk-only` |
 | `{{LAYER_WHY}}` | One sentence saying why that layer got that score |
 | `{{LAYER_EVIDENCE}}` | The `file:line` behind it. **Required on every scored layer** — this is where the "every score cites a file:line" rule is actually kept |
 | `{{TIER_NOTE}}` | e.g. ` · scored as a live app taking payments` — or delete |
 | `{{GATE_DETAIL}}` | **Gate failed** (keep `.gate.fail`): which gates failed and why, one sentence, with `file:line`. **All gates passed** (keep `.gate.pass`): name the lowest-scoring gate, e.g. "Every gate layer scores 4 or more. Security is the closest call at 4/10." |
+| `{{STRENGTH_TEXT}}` | One thing the project does well, in a sentence. Specific, never generic praise |
+| `{{STRENGTH_EVIDENCE}}` | The `file:line` that proves it |
 | `{{SEVERITY_COUNTS}}` | e.g. `3 critical · 2 high` |
+| `{{FINDING_TITLE}}` | The problem as a short headline in plain English, e.g. "Passwords are stored in a way that can be reversed" |
+| `{{FINDING_WHAT}}` | The problem in one sentence, no jargon |
+| `{{FINDING_WHY}}` | The real consequence if it is left alone |
+| `{{FINDING_LAYER}}` | The layer number this finding belongs to |
+| `{{FINDING_EVIDENCE}}` | The `file:line` where you found it. Never the secret itself |
+| `{{FIX_PROMPT}}` | The copy-paste prompt for this finding — see **Writing the fix prompts** below |
+| `{{SEVERITY}}` | "Critical" / "High" (pill `bad`), "Medium" (pill `warn`), "Low" |
+| `{{EFFORT}}` | "Low effort" / "Medium effort" / "High effort" |
+| `{{PROMPT_ID}}` | A unique id per finding — `p1`, `p2`, `p3`… It must match between the `<pre id>` and the button's `data-copy`, or the copy button does nothing |
 | `{{SCOPE_NOTE}}` | Any limit on what you read, and how the review was split (e.g. "Reviewed in 4 parallel tasks; gate findings re-checked by hand") — or delete the line |
 | `{{PREV_DATE}}` `{{PREV_PCT}}` | The earlier report's date and percentage |
 | `{{PREV_SUMMARY}}` | Delta (or "not comparable" if the layers differ), the counts of fixed / partly / not fixed, and any layer that went **down**. Count only problems the earlier report actually listed. "Fixed" means fully resolved at the cited line; anything less is partly |
@@ -53,6 +69,11 @@ Fill `${CLAUDE_SKILL_DIR}/assets/report-template.html` and publish it.
 | `{{MORE_COUNT}}` | How many findings are in the compact table |
 | `{{MORE_WHAT}}` `{{MORE_LAYER}}` `{{MORE_EVIDENCE}}` `{{MORE_EFFORT}}` | One row each: the problem in one line, its layer, its `file:line`, and Low/Medium/High |
 | `{{MORE_NOTE}}` | Why these have no fix prompt, e.g. "Below the top 15 by severity. Ask for a fix prompt for any of them." |
+| `{{WIN_TITLE}}` | The action, as an instruction: "Install Sentry", "Give development its own database" |
+| `{{WIN_DETAIL}}` | Why it is worth doing first, and what it costs |
+| `{{WIN_TIME}}` | The time estimate shown as the marker, e.g. `20m`, `45m` |
+| `{{PRIORITY_ITEM}}` | One step in the recommended order, as an instruction |
+| `{{PRIORITY_NOTE}}` | Which layer it belongs to and why it sits at that point in the order |
 | `{{PREV_MARK}}` | ✅ fixed · ⚠️ partly fixed · ❌ not fixed |
 | `{{PREV_ITEM}}` | The earlier problem, in one line, as that report described it |
 | `{{PREV_EVIDENCE}}` | The `file:line` you checked to decide the mark |
