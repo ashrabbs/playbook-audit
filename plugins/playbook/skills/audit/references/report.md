@@ -194,7 +194,8 @@ to act.
 
 ## Final chat message
 
-Three lines, then the link. Do not paste the report into chat.
+**Three lines, then the link, nothing else in between.** Do not paste the
+report into chat. The third line is always labelled `Start here:`.
 
 ```
 Score: 45% (19 of 23 layers applicable)

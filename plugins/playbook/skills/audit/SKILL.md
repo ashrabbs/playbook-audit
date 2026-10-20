@@ -164,11 +164,11 @@ Then, in chat, give them the three-line version:
 ```
 Score: 68% (14 of 23 layers applicable)
 Verdict: Not production ready — authentication has a critical gap
-Biggest win: add rate limiting to the login endpoint (about an hour)
+Start here: add rate limiting to the login endpoint (about an hour)
 ```
 
-Then the link. Do not paste the whole report into chat; that is what the report
-is for.
+**Three lines, then the link, nothing else in between.** Do not paste the whole
+report into chat; that is what the report is for.
 
 ---
 
