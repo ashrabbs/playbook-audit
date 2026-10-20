@@ -1,7 +1,7 @@
 ---
 name: audit
 description: Audit a codebase for production readiness across 23 layers and generate a shareable HTML report. Use when asked to audit, review, score or check a project, or for questions like "is this ready for production?", "is this safe to launch?", "what am I missing?", "check my app", "review my code before I ship". Finds the project automatically and adapts to any tech stack.
-allowed-tools: Read, Glob, Grep, Write, Artifact, Agent, AskUserQuestion, Bash(git rev-parse *), Bash(git log *), Bash(git status *), Bash(git remote *), Bash(ls *), Bash(find *), Bash(wc *), Bash(bash *)
+allowed-tools: Read, Glob, Grep, Write, Artifact, Agent, AskUserQuestion
 disallowed-tools: Edit, NotebookEdit
 ---
 
@@ -39,6 +39,18 @@ These are not negotiable. Breaking one makes the audit worse than useless.
    assume it exists because it usually does.
 4. **Never run their code.** No `npm start`, no test suites, no scripts from the
    project. You are reading, not executing.
+
+> **How to read a file.** Use `Read`, `Grep` and `Glob` rather than shell
+> commands. They are structured, and they need no approval inside the project.
+>
+> The only commands this skill runs are the two bundled scripts in `scripts/`
+> and read-only git (`git log`, `git status`, `git rev-parse`), which Claude
+> Code already treats as read-only along with `ls`, `cat`, `head`, `grep`,
+> `find` and `wc`. None of those are pre-approved in the frontmatter, because
+> `Bash(bash *)` would have allowed running *any* script, including the
+> project's own — the opposite of rule 4. Expect one approval prompt the first
+> time a bundled script runs. That prompt is the only thing this skill
+> executes, and the user should see it.
 
 ---
 
