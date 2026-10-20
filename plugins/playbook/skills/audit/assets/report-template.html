@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PROJECT_NAME}} — Production Readiness Report</title>
+<style>
+:root{
+  --bg:#fbfbfa; --surface:#fff; --surface-2:#f4f4f2; --border:#e4e4e0;
+  --text:#1a1a18; --text-2:#5c5c57; --text-3:#8a8a83;
+  --green:#1a7f4b; --green-bg:#e8f5ee;
+  --amber:#9a6400; --amber-bg:#fdf3e2;
+  --red:#b3261e;   --red-bg:#fdeceb;
+  --accent:#1a1a18;
+  --radius:14px;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+}
+:root:not([data-theme="light"]){
+  @media (prefers-color-scheme:dark){
+    --bg:#131312; --surface:#1c1c1a; --surface-2:#232321; --border:#32322e;
+    --text:#f0f0ed; --text-2:#a8a8a1; --text-3:#78786f;
+    --green:#5fcf92; --green-bg:#16301f;
+    --amber:#e3ab4a; --amber-bg:#312612;
+    --red:#f08a84;   --red-bg:#331715;
+    --accent:#f0f0ed;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131312; --surface:#1c1c1a; --surface-2:#232321; --border:#32322e;
+  --text:#f0f0ed; --text-2:#a8a8a1; --text-3:#78786f;
+  --green:#5fcf92; --green-bg:#16301f;
+  --amber:#e3ab4a; --amber-bg:#312612;
+  --red:#f08a84;   --red-bg:#331715;
+  --accent:#f0f0ed;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:var(--sans); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px; margin:0 auto; padding:48px 16px 80px}
+@media(max-width:600px){ .wrap{padding:28px 16px 56px} }
+
+/* ---------- header ---------- */
+.eyebrow{
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--text-3); font-weight:600; margin:0 0 10px
+}
+h1{font-size:clamp(28px,5vw,40px); line-height:1.15; margin:0 0 10px; letter-spacing:-.02em}
+.sub{color:var(--text-2); margin:0 0 32px; font-size:15px}
+.sub code{font-family:var(--mono); font-size:13px; background:var(--surface-2); padding:2px 6px; border-radius:5px}
+
+/* ---------- verdict ---------- */
+.verdict{
+  display:flex; gap:28px; align-items:center; flex-wrap:wrap;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:28px; margin-bottom:16px
+}
+.ring{flex:0 0 132px; width:132px; height:132px; position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring-label{
+  position:absolute; inset:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:0
+}
+.ring-pct{font-size:32px; font-weight:700; letter-spacing:-.03em; line-height:1}
+.ring-cap{font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.1em; margin-top:4px}
+.verdict-body{flex:1 1 300px; min-width:260px}
+.verdict-body h2{margin:0 0 8px; font-size:21px; letter-spacing:-.01em}
+.verdict-body p{margin:0; color:var(--text-2); font-size:15px}
+.scorenote{font-size:13px; color:var(--text-3); margin-top:12px}
+
+/* ---------- gate banner ---------- */
+.gate{
+  border-radius:var(--radius); padding:18px 22px; margin-bottom:32px;
+  border:1px solid; display:flex; gap:14px; align-items:flex-start
+}
+.gate.fail{background:var(--red-bg); border-color:var(--red); color:var(--red)}
+.gate.pass{background:var(--green-bg); border-color:var(--green); color:var(--green)}
+.gate strong{display:block; font-size:15px; margin-bottom:3px}
+.gate span{color:var(--text-2); font-size:14px}
+.gate.fail span{color:var(--text)}
+.gate-ico{font-size:19px; line-height:1.3}
+
+/* ---------- sections ---------- */
+section{margin:44px 0}
+h3{
+  font-size:13px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--text-3); font-weight:600; margin:0 0 16px;
+  padding-bottom:10px; border-bottom:1px solid var(--border)
+}
+
+/* ---------- strengths ---------- */
+.strength{display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--border)}
+.strength:last-child{border-bottom:0}
+.strength-ico{color:var(--green); flex:0 0 auto; font-weight:700}
+.strength p{margin:0; font-size:15px}
+.strength .ev{display:block; font-family:var(--mono); font-size:12px; color:var(--text-3); margin-top:3px}
+
+/* ---------- layer grid ---------- */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(188px,1fr)); gap:10px}
+.layer{
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:13px 15px; border-left:3px solid var(--border)
+}
+.layer.g{border-left-color:var(--green)}
+.layer.a{border-left-color:var(--amber)}
+.layer.r{border-left-color:var(--red)}
+.layer.na{opacity:.5}
+.layer-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.layer-name{font-size:13.5px; font-weight:600; letter-spacing:-.01em}
+.layer-score{font-family:var(--mono); font-size:12.5px; font-weight:700; white-space:nowrap}
+.layer.g .layer-score{color:var(--green)}
+.layer.a .layer-score{color:var(--amber)}
+.layer.r .layer-score{color:var(--red)}
+.layer.na .layer-score{color:var(--text-3)}
+.layer-num{font-size:11px; color:var(--text-3); font-family:var(--mono)}
+.gate-tag{
+  display:inline-block; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+  background:var(--surface-2); color:var(--text-3); padding:1px 5px;
+  border-radius:4px; margin-left:5px; vertical-align:1px; font-weight:600
+}
+
+/* ---------- findings ---------- */
+.finding{
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:22px; margin-bottom:14px
+}
+.finding.crit{border-left:3px solid var(--red)}
+.finding.warn{border-left:3px solid var(--amber)}
+.f-head{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap}
+.f-title{font-size:17px; font-weight:650; margin:0; letter-spacing:-.01em}
+.f-meta{display:flex; gap:6px; flex-wrap:wrap}
+.pill{
+  font-size:11px; padding:3px 9px; border-radius:20px; font-weight:600;
+  background:var(--surface-2); color:var(--text-2); white-space:nowrap
+}
+.pill.red{background:var(--red-bg); color:var(--red)}
+.pill.amber{background:var(--amber-bg); color:var(--amber)}
+.pill.green{background:var(--green-bg); color:var(--green)}
+.f-row{margin-bottom:12px}
+.f-row:last-child{margin-bottom:0}
+.f-lbl{
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--text-3); font-weight:600; margin-bottom:3px
+}
+.f-row p{margin:0; font-size:14.5px; color:var(--text)}
+.f-row.why p{color:var(--text-2)}
+code{font-family:var(--mono); font-size:12.5px; background:var(--surface-2); padding:2px 5px; border-radius:4px}
+pre{
+  background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+  padding:13px 15px; overflow-x:auto; margin:8px 0 0; font-size:12.5px; line-height:1.55
+}
+pre code{background:none; padding:0; font-size:inherit}
+
+/* ---------- ordered list ---------- */
+ol.priority{counter-reset:p; list-style:none; padding:0; margin:0}
+ol.priority li{
+  counter-increment:p; position:relative; padding:11px 0 11px 42px;
+  border-bottom:1px solid var(--border); font-size:15px
+}
+ol.priority li:last-child{border-bottom:0}
+ol.priority li::before{
+  content:counter(p); position:absolute; left:0; top:11px;
+  width:25px; height:25px; border-radius:50%; background:var(--surface-2);
+  color:var(--text-2); font-size:12px; font-weight:700;
+  display:flex; align-items:center; justify-content:center; font-family:var(--mono)
+}
+ol.priority li .note{display:block; color:var(--text-3); font-size:13px; margin-top:2px}
+
+/* ---------- quick wins ---------- */
+.win{
+  display:flex; gap:13px; align-items:flex-start; background:var(--green-bg);
+  border:1px solid color-mix(in srgb, var(--green) 28%, transparent);
+  border-radius:10px; padding:15px 17px; margin-bottom:10px
+}
+.win-ico{color:var(--green); font-weight:700; flex:0 0 auto}
+.win p{margin:0; font-size:14.5px}
+.win .t{font-weight:650; display:block; margin-bottom:2px}
+.win .m{color:var(--text-2); font-size:13.5px}
+
+/* ---------- footer ---------- */
+footer{
+  margin-top:56px; padding-top:22px; border-top:1px solid var(--border);
+  color:var(--text-3); font-size:12.5px
+}
+footer p{margin:0 0 5px}
+
+@media print{
+  body{background:#fff}
+  .wrap{max-width:none; padding:0}
+  .finding,.layer,.verdict{break-inside:avoid}
+  section{break-inside:avoid-page}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Production Readiness Report</p>
+  <h1>{{PROJECT_NAME}}</h1>
+  <p class="sub">{{STACK_SUMMARY}} · Audited {{DATE}} · <code>{{PROJECT_PATH}}</code></p>
+
+  <!-- ===== VERDICT ===== -->
+  <div class="verdict">
+    <div class="ring">
+      <svg width="132" height="132" viewBox="0 0 132 132">
+        <circle cx="66" cy="66" r="58" fill="none" stroke="var(--border)" stroke-width="11"/>
+        <!-- stroke-dasharray: {{PCT}}% of 364.4 -->
+        <circle cx="66" cy="66" r="58" fill="none" stroke="{{RING_COLOR}}" stroke-width="11"
+                stroke-linecap="round" stroke-dasharray="{{RING_FILLED}} 364.4"/>
+      </svg>
+      <div class="ring-label">
+        <span class="ring-pct">{{PCT}}%</span>
+        <span class="ring-cap">Ready</span>
+      </div>
+    </div>
+    <div class="verdict-body">
+      <h2>{{VERDICT_HEADLINE}}</h2>
+      <p>{{VERDICT_DETAIL}}</p>
+      <p class="scorenote">{{EARNED}} of {{APPLICABLE}} points across {{N_SCORED}} applicable layers · {{N_NA}} marked not applicable{{TIER_NOTE}}</p>
+    </div>
+  </div>
+
+  <!-- ===== GATE BANNER (keep .fail or .pass, delete the other) ===== -->
+  <div class="gate fail">
+    <span class="gate-ico">⛔</span>
+    <span><strong>Blocked: not production ready</strong>{{GATE_DETAIL}}</span>
+  </div>
+
+  <!-- ===== STRENGTHS ===== -->
+  <section>
+    <h3>What this project does well</h3>
+    <!-- repeat .strength -->
+    <div class="strength">
+      <span class="strength-ico">✓</span>
+      <p>{{STRENGTH_TEXT}}<span class="ev">{{STRENGTH_EVIDENCE}}</span></p>
+    </div>
+  </section>
+
+  <!-- ===== LAYER GRID ===== -->
+  <section>
+    <h3>All layers at a glance</h3>
+    <div class="grid">
+      <!-- repeat .layer — class: g (7-10) / a (4-6) / r (1-3) / na -->
+      <div class="layer g">
+        <div class="layer-top">
+          <span class="layer-name">{{LAYER_NAME}}<span class="gate-tag">Gate</span></span>
+          <span class="layer-score">{{LAYER_SCORE}}</span>
+        </div>
+        <span class="layer-num">Layer {{LAYER_NUM}}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FINDINGS ===== -->
+  <section>
+    <h3>What needs fixing</h3>
+    <!-- repeat .finding — class crit (gate/red) or warn (amber) -->
+    <article class="finding crit">
+      <div class="f-head">
+        <h4 class="f-title">{{FINDING_TITLE}}</h4>
+        <div class="f-meta">
+          <span class="pill red">{{SEVERITY}}</span>
+          <span class="pill">Layer {{FINDING_LAYER}}</span>
+          <span class="pill">{{EFFORT}}</span>
+        </div>
+      </div>
+      <div class="f-row"><div class="f-lbl">What</div><p>{{FINDING_WHAT}}</p></div>
+      <div class="f-row why"><div class="f-lbl">Why it matters</div><p>{{FINDING_WHY}}</p></div>
+      <div class="f-row">
+        <div class="f-lbl">Fix</div>
+        <p>{{FINDING_FIX}}</p>
+        <pre><code>{{FINDING_SNIPPET}}</code></pre>
+      </div>
+      <div class="f-row"><div class="f-lbl">Found in</div><p><code>{{FINDING_EVIDENCE}}</code></p></div>
+    </article>
+  </section>
+
+  <!-- ===== QUICK WINS ===== -->
+  <section>
+    <h3>Start here — quick wins</h3>
+    <div class="win">
+      <span class="win-ico">⚡</span>
+      <p><span class="t">{{WIN_TITLE}}</span><span class="m">{{WIN_DETAIL}}</span></p>
+    </div>
+  </section>
+
+  <!-- ===== PRIORITY ORDER ===== -->
+  <section>
+    <h3>Recommended order</h3>
+    <ol class="priority">
+      <li>{{PRIORITY_ITEM}}<span class="note">{{PRIORITY_NOTE}}</span></li>
+    </ol>
+  </section>
+
+  <footer>
+    <p>Generated by the Production App Playbook audit · {{DATE}}</p>
+    <p>Scored across 23 layers. Percentages are comparable to this project's own previous audits, not to other projects — a different set of non-applicable layers means a different scale.</p>
+    <p>{{SCOPE_NOTE}}</p>
+  </footer>
+
+</div>
+</body>
+</html>

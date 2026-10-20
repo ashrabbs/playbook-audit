@@ -1,0 +1,5 @@
+# Local sync baseline — tracks which private-Playbook commit this was derived from
+.last-sync
+
+# macOS
+.DS_Store

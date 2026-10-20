@@ -1,0 +1,14 @@
+{
+  "name": "playbook-audit",
+  "description": "Production readiness auditing for any codebase, on any stack.",
+  "owner": {
+    "name": "ashrabbs"
+  },
+  "plugins": [
+    {
+      "name": "playbook",
+      "source": "./plugins/playbook",
+      "description": "Audit any project for production readiness across 23 layers and generate a shareable report."
+    }
+  ]
+}

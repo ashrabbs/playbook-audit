@@ -1,0 +1,15 @@
+{
+  "name": "playbook",
+  "displayName": "Production App Playbook",
+  "description": "Audit any project for production readiness across 23 layers and generate a shareable HTML report. Finds the project for you and adapts to any tech stack.",
+  "author": {
+    "name": "ashrabbs"
+  },
+  "keywords": [
+    "audit",
+    "production-readiness",
+    "security",
+    "code-review",
+    "report"
+  ]
+}
