@@ -166,12 +166,15 @@ proven otherwise, and check the full git history for secrets.
 > itself. Apply before any judgement (`scoring.md`).
 
 - Error tracking integrated (Sentry or equivalent), **frontend and backend**
+- Error tracking sends no personal data: no default PII, no request bodies or headers, replays masked (a Layer 8 finding when it does)
 - Alerting on error-rate spikes
 - Structured logs — JSON objects with fields, not sentences
 - Correlation ID following a request across services
 - **Business-metric monitoring**, not just server health. Signups per hour, payments per hour. A 40% revenue drop with green dashboards is a silent failure
-- Uptime monitoring with a `/health` endpoint
+- Uptime monitoring with a `/health` endpoint that checks the database, not one that always says "ok"
+- A heartbeat on every scheduled job, so a job that silently stops is noticed
 - **The discovery question:** "if this went down right now, how would you find out?" If the answer is "a customer would email me", this layer is 🔴 regardless of what is installed
+- Monitors and error reports live outside the repo. If Better Stack or Sentry is connected, the audit checks them live; what to recommend when they're missing, and how to connect them: `monitoring.md`
 
 ## Layer 13 — Availability and Recovery 🚪
 

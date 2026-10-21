@@ -200,6 +200,16 @@ Report which of these you ran and which I need to run myself.
   looks identical to one that passed them.
 - **Never put a secret value in a prompt.** The same rule as the rest of the
   report — name the location only.
+- **Before a prompt changes what an endpoint returns, check who calls it.** A
+  status code the app itself depends on can't change safely. A test run asked
+  for a health endpoint to return 503, but the app read that endpoint at
+  startup and treated anything but 200 as "offline". Name the callers in the
+  prompt, and when the app is one of them, ask for a separate endpoint.
+- **Monitoring findings point to a tool.** For a missing uptime check or
+  heartbeat, recommend Better Stack; for missing error tracking, Sentry, with
+  its personal-data settings. Say how to connect each to Claude, as
+  `monitoring.md` describes. "Add monitoring" on its own gives the reader
+  nothing to do.
 - Write them in the user's register. The person pasting this may not know what
   bcrypt is; the assistant receiving it does. Say what outcome you want, not how
   to implement it.

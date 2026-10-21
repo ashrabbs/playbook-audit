@@ -39,6 +39,12 @@ These are not negotiable. Breaking one makes the audit worse than useless.
    assume it exists because it usually does.
 4. **Never run their code.** No `npm start`, no test suites, no scripts from the
    project. You are reading, not executing.
+5. **Never copy their users' data.** Error reports, logs, monitors and seed
+   files can hold real people's emails, names, IP addresses and messages. None
+   of it goes into the report, the chat or a review task's prompt: not even
+   one example, and not masked. Connected tools like Sentry are asked for
+   counts and settings only (`references/monitoring.md`). Describe a problem
+   from the code, never by quoting a user's record.
 
 > **How to read a file.** Use `Read`, `Grep` and `Glob` rather than shell
 > commands. They are structured, and they need no approval inside the project.
@@ -143,6 +149,14 @@ gets vague.
 Each task reads `references/layers.md`, which holds the checks for all 23
 layers, and assigns its layers **1–10, or N/A**.
 
+**Before starting the tasks, check for live monitoring.** If Better Stack or
+Sentry tools are in your tool list, follow `references/monitoring.md`:
+read-only, counts and settings only, and **never copy user data from Sentry
+into the report, the chat or a task prompt**. Pass the result to the task that
+covers Layers 12 and 13. If the tools aren't there, the audit recommends them,
+and connecting them to Claude, wherever monitoring or error tracking is
+missing.
+
 For each layer record:
 
 - **Score** and status: 🟢 7–10 · 🟡 4–6 · 🔴 1–3
@@ -231,6 +245,7 @@ Read these as you reach each phase, not up front:
 |---|---|
 | `references/discovery.md` | Phase 1 — stack fingerprinting and N/A rules |
 | `references/review-plan.md` | Phase 2 — splitting the review into smaller tasks |
+| `references/monitoring.md` | Phase 2 — checking Better Stack and Sentry live, safely, and what to recommend |
 | `references/layers.md` | Phase 2 — the 23 layers and their checks |
 | `references/scoring.md` | Phase 2 — gates, percentage, bands |
 | `references/report.md` | Phase 3 — report structure and how to fill the template |

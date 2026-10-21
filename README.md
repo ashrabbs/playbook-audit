@@ -62,6 +62,31 @@ You can also just ask, in your own words:
 
 ---
 
+### Optional: connect Better Stack and Sentry
+
+The audit asks "if your app went down right now, how would you find out?"
+Uptime monitors and error reports live outside your code, so the audit can
+only check them if Claude can see them. If you use
+[Better Stack](https://betterstack.com) or [Sentry](https://sentry.io),
+connect them before running the audit:
+
+| | On the web: custom connector at https://claude.ai/customize/connectors | In a terminal |
+|---|---|---|
+| Better Stack | `https://mcp.betterstack.com` | `claude mcp add betterstack --transport http https://mcp.betterstack.com` |
+| Sentry | `https://mcp.sentry.dev/mcp` | `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp` |
+
+After adding a connector on the web, start a new session.
+
+The audit only reads, and never changes anything in either tool. From Better
+Stack it reads your monitors, heartbeats and recent incidents. From Sentry it
+asks for **counts only** (how many errors, from which side of the app, how
+many are unresolved). It never copies an error message, a user's details or
+anything else from Sentry into the report, because error reports contain
+your users' data and the report is meant to be shared.
+
+Without them, monitoring is scored from the code alone, and the report tells
+you how to set them up.
+
 ## What you get
 
 A report with:

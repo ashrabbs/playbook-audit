@@ -73,7 +73,10 @@ Apply these before any judgement. A gate layer that meets a cap scores at most
 - **8** — a live secret in the repository or its git history
 
 A gate layer scored 4 must name the cap it clears and cite the file:line that
-proves it. If you cannot, it is a 3.
+proves it. If you cannot, it is a 3. For Layer 12, a live monitor read through
+the Better Stack tools also counts as proof (`monitoring.md`); cite the
+monitor's name, URL and last check. Sentry alone does not clear this cap: it
+reports errors, not whether the app is up.
 
 A high average must never launder a critical failure. 10/10 caching does not
 offset 3/10 authentication — one of those loses user data.
